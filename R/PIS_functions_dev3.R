@@ -135,9 +135,10 @@ hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet=10, 
 ###=======================================================================================
 ## PIS Functions
 
-## Calculate pathway score for gene list (uses pathScores2 function)
-## Outputs matrix of pathway scores where each row is gene set and column is bin.
-
+#' PIS calculation
+#'
+#' Calculate pathway score for gene list (uses pathScores2 function)
+#' Outputs matrix of pathway scores where each row is gene set and column is bin.
 #' @param glist list of gene set (result from binGenesByCntCutoff)
 #' @param gspace background gene space. (for hypergeoTestForGeneset.simple)
 #' @param ref_geneset list of reference gene set (eg. Pathways)
@@ -147,7 +148,6 @@ hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet=10, 
 #' @param verbose print run time. Default FALSE
 #' @return Matrix of pathway scores
 #' @export
-#' @example
 
 calculatePathwayScores <- function(glist, gspace, ref_geneset, ef_cut=2, ef.psc=1, ncore=4, verbose=TRUE, ...) {
 
@@ -218,7 +218,6 @@ calculatePathwayScores <- function(glist, gspace, ref_geneset, ef_cut=2, ef.psc=
 #' @param verbose print peak scores. Default FALSE
 #' @return PIS object list
 #' @export
-#' @example
 
 getPeakResults2 <- function(geneCntList, scoresMat, verbose=FALSE) {
 

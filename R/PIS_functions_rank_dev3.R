@@ -1,15 +1,15 @@
-##=======================================================================================
-## Functions for PIS with binned rank (mostly deprecated)
-
-#` Create Gene Rank 
-#`
-#` Create gene rank scores from differential analysis result data frames
+#' Create Gene Rank 
+#'
+#' Create gene rank scores from differential analysis result data frames
 #' @param resultDF  result dataframe (DESeq2, edgeR)
 #' @param value.col  column as character to use as value in gene rank vector (eg. logFC, stat)
 #' @param names.col  column as character to use as names of gene rank vector (eg. entrez, ensembl)
 #' @return vector of gene rank
 #' @export
-#' @example
+#' @examples
+#' \dontrun{
+#' createGeneRank(resultDF, 'stat', 'entGene')
+#' }
 
 createGeneRank <- function(resultDF, value.col, names.col) {
 	resultDF <- resultDF[which(!is.na(resultDF[,value.col])),]
@@ -19,16 +19,15 @@ createGeneRank <- function(resultDF, value.col, names.col) {
 }
 
 
-#` Bin Genes by rank
-#`
-#` Create a list of genes for each binned count
+#' Bin Genes by rank
+#'
+#' Create a list of genes for each binned count
 #' @param genesrank named vector of genes rank (output from createGeneRank)
 #' @param max_deg_count maximum count for DEG
 #' @param bin_size gene rank bin size
 #' @param reverse reverse order (for down regulated genes)
 #' @return list of genes by rank cut-off
 #' @export
-#' @example
 
 binGenesByCntCutoff <- function(genesrank, max_deg_count=2000, bin_size=10, reverse=FALSE) {
 
@@ -54,7 +53,6 @@ binGenesByCntCutoff <- function(genesrank, max_deg_count=2000, bin_size=10, reve
 #' @param loess.span span option for loess
 #' @return peak result object with smoothed scores attribute
 #' @export
-#' @example
 
 scoreSmooth <- function(peakObj, loess.span = 0.1) {
 	bin_scores <- peakObj$bin_scores
@@ -86,7 +84,7 @@ scoreSmooth <- function(peakObj, loess.span = 0.1) {
 #' @param peakObj peak result object. (Output from getPeakResults2)
 #' @param gspace total gene space
 #' @param ef_cut EF cut-off
-#' @param min.overlap
+#' @param min.overlap minimum overlap
 #' @param iter iteration
 #' @param use.smoothed use smoothed?
 #' @param ncore number of cores
