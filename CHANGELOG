@@ -1,49 +1,43 @@
 # CHANGELOG
 
-## To Do (version 0.1.4)
-## Style fix : Fix variable names to something more sensible
-## Functions : Data style handling : DESeq2, EdgeR, limma (array)
-## Functions : Sort getPeakResults2
-## Functions : PISresult into class????
-
-## Package prep (Ver 1.0.0)
-## Documents : Add examples
-## Documents : Split CHANGELOG
+## Package prep (Ver 1.0.0) (Deployed to Github at Jan 18, 2023)
+- Documents : Add examples
+- Documents : Split CHANGELOG
 
 ## Update : v.0.1.3.9000
-## 2023-01-09 : getGenesByCutoffs -- gene list ID name format
+- 2023-01-09 : getGenesByCutoffs -- gene list ID name format
 
-## Update : v.0.1.3 (updated to server at Jul 14) 
-## 2022-07-13 : hypergeoTestForGeneset.simple -- match refGMT gene space match after checking
-## 2022-07-14 : calculatePathwayScores -- minGeneSet default to NULL because it doesn't do a damn thing --> remove alltogether at the last ver.
-## 2022-07-14 : getPeakResults2 -- remove indivpeak from outputs
+## Update : v.0.1.3 (updated to server at Jul 14, 2022)
+- 2022-07-13 : hypergeoTestForGeneset.simple -- match refGMT gene space match after checking
+- 2022-07-14 : calculatePathwayScores -- minGeneSet default to NULL because it doesn't do a damn thing --> remove alltogether at the last ver.
+- 2022-07-14 : getPeakResults2 -- remove indivpeak from outputs
 
-## Update : v.0.1.2 (updated to server at Jul 8)
-## 2022-07-08 : Added getGenesByCutoffs
-## 2022-07-08 : Removed Gen_enrichment to avoid potential conflict with Lazy2 version
-## 2022-07-08 : hypergeoTestForGeneset.simple -- Instead of stopping with error when gspace doesn't contain all query, function quietly removes query genes outside of given space.
-## 2022-07-08 : hypergeoTestForGeneset.simple -- exc variable correctly detects gene set items to be removed. ('<=' -> '<')
+## Update : v.0.1.2 (updated to server at Jul 8, 2022)
+- 2022-07-08 : Added getGenesByCutoffs
+- 2022-07-08 : Removed Gen_enrichment to avoid potential conflict with Lazy2 version
+- 2022-07-08 : hypergeoTestForGeneset.simple -- Instead of stopping with error when gspace doesn't contain all query, function quietly removes query genes outside of given space.
+- 2022-07-08 : hypergeoTestForGeneset.simple -- exc variable correctly detects gene set items to be removed. ('<=' -> '<')
 
-## Update : v.0.1.1 (updated to server at Jun 3)
-## 2022-05-11 : Gen_enrichment function updated version added
-## 2022-05-30 : pathwayScores ef_cut default to 2
-## 2022-05-30 : hypergeoTestForGeneset.simple -- only tell about removed geneset if verbose
-## 2022-05-30 : getPeakResults2 -- get rid of peak_cnt2
+## Update : v.0.1.1 (updated to server at Jun 3, 2022)
+- 2022-05-11 : Gen_enrichment function updated version added
+- 2022-05-30 : pathwayScores ef_cut default to 2
+- 2022-05-30 : hypergeoTestForGeneset.simple -- only tell about removed geneset if verbose
+- 2022-05-30 : getPeakResults2 -- get rid of peak_cnt2
 
 ## Update : v.0.1.0
-## 2021-11-08 : take intersected gene set size only
-## 2021-11-19 : getPeakResults for all peak data
-## 2021-11-19 : verbose options to shut some functions up
-## 2022-01-05 : summarizePISResults. Wrap PIS result from DEG list. (testing)
-## 2022-01-12 : Update Network Density functions.
-## 2022-01-12 : hypergeoTestForGeneset.simple -- added p-value just in case
-## 2022-01-14 : getPeakResults -- added gene set in peak in output (peak_gset)
-## 2022-01-14 : calculatePathwayScores -- minimum overlap added.
-## 2022-01-20 : getPeakResults2 : make scores by bin vectors into data.table
-## 2022-01-25 : peakSignifByRandPerm : function to get significance by random permutation(?)
-## 2022-03-10 : removed `set_size` option from pathScores2 function used in `calculatePathwayScores`
-## 2022-03-11 : new function `createGeneRank` for creating gene rank vector to be used from a dataframe.
-## 2022-03-11 : clean script for sharing
-## 2022-03-11 :   - hypergeoTestForGeneset.simple: added verbose option
-## 2022-03-11 :   - binGenesByCntCutoff : added reverse option
-## 2022-04-21 : extractScores add ncore option instead of taking from global env.
+- 2021-11-08 : take intersected gene set size only
+- 2021-11-19 : getPeakResults for all peak data
+- 2021-11-19 : verbose options to shut some functions up
+- 2022-01-05 : summarizePISResults. Wrap PIS result from DEG list. (testing)
+- 2022-01-12 : Update Network Density functions.
+- 2022-01-12 : hypergeoTestForGeneset.simple -- added p-value just in case
+- 2022-01-14 : getPeakResults -- added gene set in peak in output (peak_gset)
+- 2022-01-14 : calculatePathwayScores -- minimum overlap added.
+- 2022-01-20 : getPeakResults2 : make scores by bin vectors into data.table
+- 2022-01-25 : peakSignifByRandPerm : function to get significance by random permutation(?)
+- 2022-03-10 : removed `set_size` option from pathScores2 function used in `calculatePathwayScores`
+- 2022-03-11 : new function `createGeneRank` for creating gene rank vector to be used from a dataframe.
+- 2022-03-11 : clean script for sharing
+- 2022-03-11 :   - hypergeoTestForGeneset.simple: added verbose option
+- 2022-03-11 :   - binGenesByCntCutoff : added reverse option
+- 2022-04-21 : extractScores add ncore option instead of taking from global env.
