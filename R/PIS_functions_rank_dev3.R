@@ -119,36 +119,6 @@ peakSignifByRandPerm <- function(peakObj, gspace, ef_cut=2, min.overlap=5, iter=
 
 
 
-##
-
-
-# drawGeneCntCutoffPeak <- function(peakObj, mtitle='', logScaleX=FALSE) {
-# 	peak_cnt <- peakObj$peak_cnt
-# 	peak_score <- peakObj$peak_score
-# 	gcntSum <- peakObj$gcntSum
-# 	peak_pathwayCnt <- peakObj$peak_pathwayCnt
-# 	genecnt_cut <- peakObj$genecnt_cut
-
-# 	tlabel <- paste('peak score :', round(peak_score),'\npeak pathway counts :', peak_pathwayCnt)
-# 	# ylim <- sort(c(0,gcntSum[which.max(abs(gcntSum))]))
-# 	ylim <- range(c(0, gcntSum))
-
-# 	if(logScaleX) {
-# 		plot(log10(genecnt_cut),gcntSum, pch=20, cex=.7, main=mtitle, xlab='DEG count (log10)', ylab='PIS',ylim=ylim)
-# 		lines(log10(genecnt_cut),gcntSum, cex=.7, col='grey25')
-# 		abline(v=log10(peak_cnt), col='blue', lty=2)
-# 		text(x=log10(peak_cnt),y=10, label=paste('cut',peak_cnt), col='blue', adj=c(-0.2,0.5))
-# 		text(x=log10(max(genecnt_cut)),y=round(peak_score), label=tlabel, adj = c(0.80,2))	
-# 	} else {
-# 		plot(genecnt_cut,gcntSum, pch=20, cex=.7,main=mtitle, xlab='DEG count', ylab='PIS',ylim=ylim)
-# 		lines(genecnt_cut,gcntSum, cex=.7, col='grey25')
-# 		abline(v=peak_cnt, col='blue', lty=2)
-# 		text(x=peak_cnt,y=10, label=paste('cut',peak_cnt), col='blue', adj=c(-0.2,0.5))
-# 		text(x=max(genecnt_cut),y=round(peak_score), label=tlabel, adj = c(0.80,2))
-# 	}	
-# }
-
-
 #' Draw peak plot
 #'
 #' Draw peak plot

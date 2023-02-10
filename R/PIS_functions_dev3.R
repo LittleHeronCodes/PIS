@@ -1,53 +1,4 @@
-###==============================================###
-###  Pathway Impact Score Functions v.0.1.3.9000 ###
-###==============================================###
-
-# ## Extract gene rank scores from list of result data frames (not share)
-# extractScores <- function(resultsLS, value.col, names.col, ncore=2) {
-# 	require(parallel)
-# 	out <- mclapply(resultsLS, function(dff) {
-# 		dff <- dff[which(!is.na(dff[,names.col])),]
-# 		scores <- structure(dff[,value.col], names=dff[,names.col])
-# 		return(scores)
-# 		}, mc.cores=ncore)
-# 	return(out)
-# }
-
-
-#' Gene List Extraction
-#' 
-#' Extract gene list by cut-offs from DE result
-#' @param resultDF result data frame. column names need to include 'entGene', 'adj.P.Val', 'logFC'
-#' @param fcos fold change
-#' @param qcos q-value
-#' @return List of entrez IDs 
-#' @export
-
-getGenesByCutoffs <- function(resultDF, fcos, qcos) {
-	cutoff_idx <- apply(expand.grid(sprintf('fc%.1f',fcos), sprintf('q%.2f',qcos)),1, function(v) paste0(v[2],'_',v[1])) 
-	# cutoff_idx <- apply(expand.grid(sprintf('fc%0.01f',fcos), sprintf('q%g',qcos)),1, function(v) paste0(v[2],'_',v[1]))
-	# cutoff_idx <- apply(expand.grid(paste0('fc',fcos), paste0('q',qcos)),1, function(v) paste0(v[2],'_',v[1]))
-	
-	## resultDF cleanup ##
-	##
-
-	resultLS <- rep(list(resultDF), length(cutoff_idx))
-	names(resultLS) <- cutoff_idx
-	fcov <- structure(rep(fcos, length(qcos)), names = cutoff_idx)
-	qcov <- structure(rep(qcos, each=length(fcos)), names = cutoff_idx)
-
-	# extractGeneList from Lazy2	
-	geneList <- list(up = list(), dn = list(), to=list())
-	for(aid in names(resultLS)) {
-		resultDF.f <- resultLS[[aid]] %>% filter( !is.na(entGene) )
-
-		geneList$up[[aid]] <- with(resultDF.f, unique(entGene[which(adj.P.Val < qcov[aid] & logFC >=  log2(fcov[aid]))]) )
-		geneList$dn[[aid]] <- with(resultDF.f, unique(entGene[which(adj.P.Val < qcov[aid] & logFC <= -log2(fcov[aid]))]) )
-		geneList$to[[aid]] <- unique(resultDF.f$entGene)
-	}
-	return(geneList)
-}
-
+## Pathway Impact Analysis Functions
 
 ##=======================================================================================
 ## These functions are for internal use only
@@ -84,23 +35,15 @@ hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet=10, 
 		# stop(paste(length(setdiff(query, gspace)),'query items were found outside of background space. Check inputs.'))
 		query <- intersect(query, gspace)
 	}
+	if(length(query) == 0) stop('query should be character vector of at least length 1.')
+
 	if(!all(unlist(refGMT) %in% gspace)) {
 		refGMT <- lapply(refGMT, function(g) intersect(g,gspace))		
 	}
 
-	if(length(query) == 0) stop('query should be character vector of at least length 1.')
-
 	# filter refGMT with less than minimum gene set
 	exc <- which(sapply(refGMT, length) < minGeneSet)
 	if(length(exc) != 0) {
-		if(verbose) {
-			if(length(exc) <= 5) {
-				mesg <- paste('Ref set no.', paste(exc, collapse=', '), 'had less than', minGeneSet,'genes and were excluded.')
-			} else {
-				mesg <- paste(length(exc), ' entries in refGMT had less than', minGeneSet,'genes and were excluded.')
-			}
-			message(mesg)
-		}
 		refGMT <- refGMT[which(sapply(refGMT, length) >= minGeneSet)]
 	}
 	if(length(refGMT) == 0) stop('Length of refGMT after filtering for minGeneSet is zero. Set lower minGeneSet or check gene inputs.')
@@ -108,26 +51,17 @@ hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet=10, 
 	# hypergeometric test
 	N <- length(gspace)								# no of balls in urn
 	k <- length(query)								# no of balls drawn from urn (DEG no)
-	enrRes <- lapply(refGMT, function(refgenes) {
-		q <- length(intersect(refgenes, query))		# no of white balls drawn
-		m <- length(intersect(gspace, refgenes)) 	# no of white balls in urn
-		# I <- intersect(refgenes, query)
 
-		pVal <- phyper(q-1, m, N-m, k, lower.tail = FALSE)
-		odds <- (q + ef.psc) / (m / N * k + ef.psc)
-		jacc <- q / length(union(query, refgenes))
-		gs.ratio <- paste0(q,'/',k)
-		bg.ratio <- paste0(m,'/',N)
+	qs <- sapply(refGMT, function(x) length(intersect(x, query)))	# no of white balls drawn
+	ms <- sapply(refGMT, length) 									# no of white balls in urn
 
-		return(data.table(pVal = pVal, oddsRatio=odds, tan = jacc, int=q, gsRatio=gs.ratio, bgRatio=bg.ratio))
-		# return(data.table(pVal=pVal, oddsRatio=odds, int=q))
-		})
-	names(enrRes) <- names(refGMT)
+	pvals <- phyper(qs - 1, ms, N - ms, k, lower.tail = FALSE)
+	odds <- (qs + ef.psc) / (ms / N * k + ef.psc)
+	jacc <- qs / sapply(refGMT, function(x) length(union(x, query)))
+	gs.ratio <- paste0(qs,'/',k)
+	bg.ratio <- paste0(ms,'/',N)
+	enrRes <- data.table(ID=names(refGMT), pVal=pvals, oddsRatio=odds, tan=jacc, int=qs, gsRatio=gs.ratio, bgRatio=bg.ratio)
 
-	enrRes <- rbindlist(enrRes, idcol='ID')
-	# enrRes$logP <- -log10(enrRes$pVal)
-
-	# enrRes <- enrRes[,c('ID', 'pVal', 'oddsRatio', 'int')]
 	return(enrRes)
 }
 

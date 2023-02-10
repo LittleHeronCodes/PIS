@@ -1,5 +1,37 @@
 ## Some gene list related functions from Lazy2
 
+#' Gene List Extraction
+#'
+#' Extract gene list by cut-offs from the differential analysis result.
+#' @param resultDF result data frame. Column names need to include "entGene", "adj.P.Val", "logFC"
+#' @param fcos fold change
+#' @param qcos q-value
+#' @return List of entrez IDs
+#' @export
+
+getGenesByCutoffs <- function(resultDF, fcos, qcos) {
+    cutoff_idx <- apply(expand.grid(sprintf("fc%.1f", fcos), sprintf("q%.2f", qcos)), 1, function(v) paste0(v[2], "_", v[1]))
+
+    ## resultDF cleanup ##
+    ##
+
+    resultLS <- rep(list(resultDF), length(cutoff_idx))
+    names(resultLS) <- cutoff_idx
+    fcov <- structure(rep(fcos, length(qcos)), names = cutoff_idx)
+    qcov <- structure(rep(qcos, each = length(fcos)), names = cutoff_idx)
+
+    # extractGeneList from Lazy2
+    geneList <- list(up = list(), dn = list(), to = list())
+    for (aid in names(resultLS)) {
+        resultDF.f <- resultLS[[aid]] %>% filter(!is.na(entGene))
+
+        geneList$up[[aid]] <- with(resultDF.f, unique(entGene[which(adj.P.Val < qcov[aid] & logFC >= log2(fcov[aid]))]))
+        geneList$dn[[aid]] <- with(resultDF.f, unique(entGene[which(adj.P.Val < qcov[aid] & logFC <= -log2(fcov[aid]))]))
+        geneList$to[[aid]] <- unique(resultDF.f$entGene)
+    }
+    return(geneList)
+}
+
 #' Count number of genes in geneList
 #' 
 #' Lazy function for gene number for geneList
@@ -51,16 +83,16 @@ readGMT <- function(gmtfile, as.df=FALSE) {
 #' @describeIn readGMT write gmt file for geneset list.
 #' @export
 
-writeGMT <- function(gmtfile, genelist, geneset_desc='') {
+writeGMT <- function(gmtfile, genelist, geneset_desc="") {
 	if( !(is.list(genelist) & all(sapply(genelist, is.character))) ) {
-		stop('Check genelist format. genelist should be a one-level list of genesets.')
+		stop("Check genelist format. genelist should be a one-level list of genesets.")
 	}
 	if(length(names(geneset_desc)) != 0) {
 		geneset_desc <- geneset_desc[names(genelist)]
 	}
 
-	concat <- sapply(genelist, function(v) paste(v, collapse='\t'))
-	out <- paste0(names(concat), '\t',geneset_desc,'\t', concat)
+	concat <- sapply(genelist, function(v) paste(v, collapse="\t"))
+	out <- paste0(names(concat), "\t",geneset_desc,"\t", concat)
 
 	writeLines(out, con=gmtfile)
 }

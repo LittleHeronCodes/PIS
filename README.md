@@ -8,6 +8,7 @@ Package for Pathway Impact Score
 - [ ] Functions : Sort getPeakResults2
 - [ ] Functions : PISresult into class???
 
+
 ## Installation Guide
 
 ```r
@@ -16,4 +17,5 @@ devtools::install_github('LittleHeronCodes/PIS')
 library(Lazy2, lib.loc = 'path/to/alt/RLib')
 ```
 
+## How to Use (coming soon)
 

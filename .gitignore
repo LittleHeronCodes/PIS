@@ -1,3 +1,7 @@
+# sublime files
+*.sublime-project
+*.sublime-workspace
+
 # History files
 .Rhistory
 .Rapp.history
