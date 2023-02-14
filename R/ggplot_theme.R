@@ -3,6 +3,8 @@
 #` Theme for transparent ggplot figures. function adopts from theme_grey.
 #' @param base_size font base size. default 11
 #' @export
+#' @examples
+#' theme_set(theme_transparent3)
 
 theme_transparent3 <- function(base_size = 11, base_family = "", base_line_size = base_size/22, base_rect_size = base_size/22) {
 	.theme <- theme_grey(base_size = base_size, base_family = base_family, 

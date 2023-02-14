@@ -1,8 +1,8 @@
 ## Some gene list related functions from Lazy2
 
-#' Gene List Extraction
+#' Get DEGs by cut-offs
 #'
-#' Extract gene list by cut-offs from the differential analysis result.
+#' Extract the list of DEGs by cut-offs from the differential analysis results.
 #' @param resultDF result data frame. Column names need to include "entGene", "adj.P.Val", "logFC"
 #' @param fcos fold change
 #' @param qcos q-value
@@ -20,7 +20,7 @@ getGenesByCutoffs <- function(resultDF, fcos, qcos) {
     fcov <- structure(rep(fcos, length(qcos)), names = cutoff_idx)
     qcov <- structure(rep(qcos, each = length(fcos)), names = cutoff_idx)
 
-    # extractGeneList from Lazy2
+    # extract gene list (from Lazy2)
     geneList <- list(up = list(), dn = list(), to = list())
     for (aid in names(resultLS)) {
         resultDF.f <- resultLS[[aid]] %>% filter(!is.na(entGene))
@@ -32,10 +32,10 @@ getGenesByCutoffs <- function(resultDF, fcos, qcos) {
     return(geneList)
 }
 
+
 #' Count number of genes in geneList
 #' 
-#' Lazy function for gene number for geneList
-#' 
+#' Lazy function for gene number for geneList. 
 #' @param geneList Nested DEG list. See example for gene list structure. 
 #' @export
 #' @examples
@@ -47,12 +47,13 @@ getGenesByCutoffs <- function(resultDF, fcos, qcos) {
 #' 	)
 #' geneCount(geneList)
 
-geneCount <- function(geneList) { sapply(geneList, function(ls) sapply(ls, length)) }
+geneCount <- function(geneList) { sapply(geneList, lengths) }
+
 
 #' readGMT
 #' 
-#' gmt file reader. A GMT file format is a tab delimited text file containing gene sets.
-#' Each line should contain one geneset, delimited by tab. Genes should start from 3rd field.
+#' GMT file reader. A GMT file format is a tab delimited text file containing gene sets.
+#' Each line in the GMT file should contain one geneset or pathway, delimited by tab. Genes should start from the 3rd field.
 #' 
 #' @param gmtfile GMT file path
 #' @param as.df Return as data frame?

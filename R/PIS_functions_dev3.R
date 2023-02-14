@@ -46,7 +46,9 @@ hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet=10, 
 	if(length(exc) != 0) {
 		refGMT <- refGMT[which(sapply(refGMT, length) >= minGeneSet)]
 	}
-	if(length(refGMT) == 0) stop('Length of refGMT after filtering for minGeneSet is zero. Set lower minGeneSet or check gene inputs.')
+	if(length(refGMT) == 0) {
+		stop('Length of refGMT after filtering for minGeneSet is zero. Set lower minGeneSet or check gene inputs.')
+	}
 
 	# hypergeometric test
 	N <- length(gspace)								# no of balls in urn
@@ -199,17 +201,32 @@ getPeakResults2 <- function(geneCntList, scoresMat, verbose=FALSE) {
 }
 
 
-# ## PIS Result Summarize function (testing)
-# summarizePISResults <- function(scoresMat, genelist, score_mode=NULL) {
-# 	if(!identical(colnames(scoresMat), names(genelist))) stop('sig ids in scoresMat and genelist does not match!')
+## PIS object S3 methods
 
-# 	pis_with_usual <- data.table(
-# 		sig_id = names(genelist),
-# 		peak_cnt = sapply(genelist, length),							# genecnt: no of DEGs in peak
-# 		peak_score = apply(scoresMat, 2, sum), 							# pis: PIS Score at peak
-# 		peak_pathwayCnt = apply(scoresMat, 2, function(v) sum(v != 0))	# pathwaycnt: no of pathways in peak
-# 		)
-# 	if(!is.null(score_mode)) pis_with_usual$score_mode <- score_mode
-# 	return(pis_with_usual)
+setMethod(show, "PISobj", function(object) {
+	cat("\n")
+	cat("  PIS Score:", object$peak_score, "\n")
+	cat("  PIS threshold:", names(object$peak_cnt), "\n")
+	cat("  No. of DEGs in peak:", object$peak_cnt,"\n")
+	cat("  No. of enriched pathways in peak:", object$peak_pathwayCnt,"\n")
+	cat("\n")
+})
+
+# show.PISobj <- function(object) {
+# 	cat("\n")
+# 	cat("  PIS Score:", object$peak_score, "\n")
+# 	cat("  PIS threshold:", names(object$peak_cnt), "\n")
+# 	cat("  No. of DEGs in peak:", object$peak_cnt,"\n")
+# 	cat("  No. of enriched pathways in peak:", object$peak_pathwayCnt,"\n")
+# 	cat("\n")
 # }
+
+print.PISobj <- function(object) { show(object) }
+
+head.PISobj <- function(object) {
+	show(object)
+	out = lapply(object[c("peak_gset", "scored_pathways","bin_scores")], head)
+	print(out)
+}
+
 
