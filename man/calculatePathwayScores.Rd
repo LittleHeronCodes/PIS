@@ -29,6 +29,8 @@ calculatePathwayScores(
 \item{ncore}{no of threads to use in mclapply. (ncore=1 uses lapply)}
 
 \item{verbose}{print run time. Default FALSE}
+
+\item{...}{futher arguments to be passed to the internal hypergeoTestForGeneset.simple function}
 }
 \value{
 Matrix of pathway scores

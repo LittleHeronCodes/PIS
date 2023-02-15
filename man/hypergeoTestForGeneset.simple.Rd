@@ -26,6 +26,9 @@ hypergeoTestForGeneset.simple(
 
 \item{verbose}{print number of filtered entries in refGMT. Default FALSE}
 }
+\value{
+dataframe of results
+}
 \description{
 Run hypergeometric test for gene set. (used inside calculatePathwayScores)
 This is a simplified version of the function in the Lazy2 package.

@@ -23,7 +23,7 @@ getGenesByCutoffs <- function(resultDF, fcos, qcos) {
     # extract gene list (from Lazy2)
     geneList <- list(up = list(), dn = list(), to = list())
     for (aid in names(resultLS)) {
-        resultDF.f <- resultLS[[aid]] %>% filter(!is.na(entGene))
+        resultDF.f <- subset(resultLS[[aid]], !is.na(entGene))
 
         geneList$up[[aid]] <- with(resultDF.f, unique(entGene[which(adj.P.Val < qcov[aid] & logFC >= log2(fcov[aid]))]))
         geneList$dn[[aid]] <- with(resultDF.f, unique(entGene[which(adj.P.Val < qcov[aid] & logFC <= -log2(fcov[aid]))]))
@@ -72,7 +72,7 @@ readGMT <- function(gmtfile, as.df=FALSE) {
 	names(res) <- vapply(res, function(y) y[1], character(1))
 	out <- lapply(res, "[", -c(1:2))
 	if(as.df) {
-		ont2gene <- stack(out)
+		ont2gene <- utils::stack(out)
 		ont2gene <- ont2gene[, c("ind", "values")]
 		colnames(ont2gene) <- c("ont", "gene")
 		out <- ont2gene

@@ -4,12 +4,7 @@
 \alias{drawGeneCntCutoffPeak2}
 \title{Draw peak plot}
 \usage{
-drawGeneCntCutoffPeak2(
-  peakObj,
-  mtitle = "",
-  lw_colname = NULL,
-  logScaleX = FALSE
-)
+drawGeneCntCutoffPeak2(peakObj, mtitle = "", lw_colname = NULL)
 }
 \arguments{
 \item{peakObj}{peak result object. (Output from getPeakResults2)}

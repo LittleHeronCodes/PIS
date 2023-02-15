@@ -17,5 +17,5 @@ getPeakResults2(geneCntList, scoresMat, verbose = FALSE)
 PIS object list
 }
 \description{
-Summarize result from calculatePathwayScores and get peak cut-off
+Summarize result from calculatePathwayScores and get peak cut-off.
 }

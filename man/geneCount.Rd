@@ -10,7 +10,7 @@ geneCount(geneList)
 \item{geneList}{Nested DEG list. See example for gene list structure.}
 }
 \description{
-Lazy function for gene number for geneList
+Lazy function for gene number for geneList.
 }
 \examples{
 set.seed(1234)

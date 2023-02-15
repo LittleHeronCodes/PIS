@@ -1,17 +1,20 @@
 Package: PIS
 Title: Pathway Impact Score
-Version: 0.1.3.9000
+Version: 0.2.0.9000
 Authors@R: 
     person("Yeogha", "Yoon", email = "ygyoon17@ewhain.net", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0955-4344"))
 Description: Determine DEG thresholds by calculating the pathway level effects.
-License: MIT License
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3.9000
 Depends: 
 	R (>= 4.1.0)
 Imports: 
-	data.table (>= 1.12.0),
-    tidyverse (>= 1.3.1)
-	parallel,
+	data.table (>= 1.14.0),
+    stats,
+    utils,
+    methods,
+    ggplot2 (>= 3.3.5),
+	parallel

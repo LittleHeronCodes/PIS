@@ -7,6 +7,7 @@
 peakSignifByRandPerm(
   peakObj,
   gspace,
+  ref_geneset,
   ef_cut = 2,
   min.overlap = 5,
   iter = 10000,
@@ -18,6 +19,8 @@ peakSignifByRandPerm(
 \item{peakObj}{peak result object. (Output from getPeakResults2)}
 
 \item{gspace}{total gene space}
+
+\item{ref_geneset}{list of reference gene set (eg. Pathways)}
 
 \item{ef_cut}{EF cut-off}
 

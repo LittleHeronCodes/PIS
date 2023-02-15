@@ -26,9 +26,12 @@ pathScores2 <- function(efs, ef_cut=2) {
 #' @param minGeneSet minimum size of gene set. This is used to filter refGMT. Default 10
 #' @param ef.psc pseudocount when calculating enrichment factor (oddsRatio). Default 1
 #' @param verbose print number of filtered entries in refGMT. Default FALSE
+#' @return dataframe of results
+#' @import data.table
+#' @import stats
+#' @export
 
 hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet=10, ef.psc=1, verbose=FALSE) {
-	require(data.table)
 
 	# match gene space
 	if(!all(query %in% gspace)) {
@@ -82,7 +85,9 @@ hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet=10, 
 #' @param ef.psc pseudocount when calculating enrichment factor (oddsRatio). Default 0
 #' @param ncore no of threads to use in mclapply. (ncore=1 uses lapply)
 #' @param verbose print run time. Default FALSE
+#' @param ... futher arguments to be passed to the internal hypergeoTestForGeneset.simple function
 #' @return Matrix of pathway scores
+#' @importFrom parallel mclapply
 #' @export
 
 calculatePathwayScores <- function(glist, gspace, ref_geneset, ef_cut=2, ef.psc=1, ncore=4, verbose=TRUE, ...) {
@@ -100,7 +105,6 @@ calculatePathwayScores <- function(glist, gspace, ref_geneset, ef_cut=2, ef.psc=
 	# Calculate Pathway scores
 	tcheck <- proc.time()
 	if(ncore > 1) {
-		require(parallel)
 		scoresLS <- mclapply(glist, function(gset) {
 			if(length(gset) == 0) {
 				out <- structure(rep(0, length(ref_geneset)), names=names(ref_geneset))
@@ -147,8 +151,7 @@ calculatePathwayScores <- function(glist, gspace, ref_geneset, ef_cut=2, ef.psc=
 
 #' Get Peak Result from calculatePathwayScores
 #' 
-#' Summarize result from calculatePathwayScores and get peak cut-off
-#' 
+#' Summarize result from calculatePathwayScores and get peak cut-off. 
 #' @param geneCntList list of genes binned by count (output from binGenesByCntCutoff)
 #' @param scoresMat Pathway score matrix (output from calculatePathwayScores)
 #' @param verbose print peak scores. Default FALSE
@@ -186,47 +189,17 @@ getPeakResults2 <- function(geneCntList, scoresMat, verbose=FALSE) {
 	# scores by bin
 	bin_scores <- data.table(bin = names(genecnt_cut), genecnt = genecnt_cut, bin_scores = gcntSum)#, indiv_peak = aaa)
 
-	##=================================================================================
-	## THIS NEEDS TO BE MADE TO A CLASS with proper print and keep all parameters
+	# PIS result into PISobject
 	peakObj <- list(peak_cnt=peak_cnt, #peak_cnt2=peak_cnt2, 
 		peak_score=peak_score, peak_pathwayCnt=length(scored_pathways), 
 		peak_gset=peak_gset, scored_pathways=scored_pathways, #indiv_peaks=indivpeaks, #smoothed_peak=list(),
 		bin_scores = bin_scores )
 		# genecnt_cut=genecnt_cut, gcntSum=gcntSum )
+	class(peakObj) <-  "PISobj"
+	
 	mesg <- paste('peak score :', round(peak_score),'\npeak pathway counts :', peakObj$peak_pathwayCnt)
 	if(verbose) message(mesg)
-	##=================================================================================
 
 	return(peakObj)
 }
-
-
-## PIS object S3 methods
-
-setMethod(show, "PISobj", function(object) {
-	cat("\n")
-	cat("  PIS Score:", object$peak_score, "\n")
-	cat("  PIS threshold:", names(object$peak_cnt), "\n")
-	cat("  No. of DEGs in peak:", object$peak_cnt,"\n")
-	cat("  No. of enriched pathways in peak:", object$peak_pathwayCnt,"\n")
-	cat("\n")
-})
-
-# show.PISobj <- function(object) {
-# 	cat("\n")
-# 	cat("  PIS Score:", object$peak_score, "\n")
-# 	cat("  PIS threshold:", names(object$peak_cnt), "\n")
-# 	cat("  No. of DEGs in peak:", object$peak_cnt,"\n")
-# 	cat("  No. of enriched pathways in peak:", object$peak_pathwayCnt,"\n")
-# 	cat("\n")
-# }
-
-print.PISobj <- function(object) { show(object) }
-
-head.PISobj <- function(object) {
-	show(object)
-	out = lapply(object[c("peak_gset", "scored_pathways","bin_scores")], head)
-	print(out)
-}
-
 

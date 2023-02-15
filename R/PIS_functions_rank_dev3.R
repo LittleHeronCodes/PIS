@@ -13,7 +13,7 @@
 
 createGeneRank <- function(resultDF, value.col, names.col) {
 	resultDF <- resultDF[which(!is.na(resultDF[,value.col])),]
-	genesrank <- with(resultDF3, structure(get(value.col), names=as.character(get(names.col))))
+	genesrank <- with(resultDF, structure(get(value.col), names=as.character(get(names.col))))
 	genesrank <- sort(genesrank, decreasing=TRUE)
 	return(genesrank)
 }
@@ -83,6 +83,7 @@ scoreSmooth <- function(peakObj, loess.span = 0.1) {
 #' (add description)
 #' @param peakObj peak result object. (Output from getPeakResults2)
 #' @param gspace total gene space
+#' @param ref_geneset list of reference gene set (eg. Pathways)
 #' @param ef_cut EF cut-off
 #' @param min.overlap minimum overlap
 #' @param iter iteration
@@ -90,7 +91,7 @@ scoreSmooth <- function(peakObj, loess.span = 0.1) {
 #' @param ncore number of cores
 #' @return peak result object with smoothed scores attribute
 
-peakSignifByRandPerm <- function(peakObj, gspace, ef_cut=2, min.overlap=5, iter=1e4, use.smoothed=FALSE, ncore=1) {
+peakSignifByRandPerm <- function(peakObj, gspace, ref_geneset, ef_cut=2, min.overlap=5, iter=1e4, use.smoothed=FALSE, ncore=1) {
 	if(use.smoothed & ('smoothed_peak' %in% names(peakObj))) {
 		smidx <- names(peakObj$smoothed_peak)[1]
 		smObj <- peakObj$smoothed_peak[[smidx]]
@@ -104,7 +105,7 @@ peakSignifByRandPerm <- function(peakObj, gspace, ef_cut=2, min.overlap=5, iter=
 	}
 
 	randomls <- lapply(1:iter, function(i) sample(gspace, cnt))
-	scoresran <- calculatePathwayScores(randomls, gspace, pathways, ef_cut, min.overlap, ncore=ncore) # ~ 1 min
+	scoresran <- calculatePathwayScores(randomls, gspace, ref_geneset, ef_cut, min.overlap, ncore=ncore) # ~ 1 min
 	ran_score_dist <- apply(scoresran, 2, sum)
 	signif <- sum(ran_score_dist > score)/length(ran_score_dist)
 	
@@ -125,8 +126,9 @@ peakSignifByRandPerm <- function(peakObj, gspace, ef_cut=2, min.overlap=5, iter=
 #' @param peakObj peak result object. (Output from getPeakResults2)
 #' @param mtitle main title for plot
 #' @param lw_colname loess smoothed column name. (from names(peakObj$smoothed_peak))
+#' @export
 
-drawGeneCntCutoffPeak2 <- function(peakObj, mtitle='', lw_colname=NULL, logScaleX=FALSE) {
+drawGeneCntCutoffPeak2 <- function(peakObj, mtitle='', lw_colname=NULL) {
 	plotdf <- peakObj$bin_scores
 	peak_cnt <- peakObj$peak_cnt
 

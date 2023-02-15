@@ -22,8 +22,8 @@ writeGMT(gmtfile, genelist, geneset_desc = "")
 Gene set dataframe of 2 column or list
 }
 \description{
-gmt file reader. A GMT file format is a tab delimited text file containing gene sets.
-Each line should contain one geneset, delimited by tab. Genes should start from 3rd field.
+GMT file reader. A GMT file format is a tab delimited text file containing gene sets.
+Each line in the GMT file should contain one geneset or pathway, delimited by tab. Genes should start from the 3rd field.
 }
 \section{Functions}{
 \itemize{
