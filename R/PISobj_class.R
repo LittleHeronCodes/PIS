@@ -1,6 +1,5 @@
 ## PIS object S3 methods
 
-#' @import methods
 PISobj <- setClass("PISobj")
 
 #' PIS object S3 class

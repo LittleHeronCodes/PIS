@@ -27,8 +27,6 @@ pathScores2 <- function(efs, ef_cut=2) {
 #' @param ef.psc pseudocount when calculating enrichment factor (oddsRatio). Default 1
 #' @param verbose print number of filtered entries in refGMT. Default FALSE
 #' @return dataframe of results
-#' @import data.table
-#' @import stats
 #' @export
 
 hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet=10, ef.psc=1, verbose=FALSE) {
