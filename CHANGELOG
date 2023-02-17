@@ -6,6 +6,7 @@
     - Fixed dependency problems (import).
     - Added License with `use_mit_license()`.
 - 2023-02-15 : PIS results into S3 class object. Added generic print function.
+- 2023-02-17 : S3 print method fix.
 
 ## Update : v.0.1.3.9000
 - 2023-01-09 : getGenesByCutoffs -- gene list ID name format
