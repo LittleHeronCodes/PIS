@@ -19,11 +19,11 @@ writeGMT(gmtfile, genelist, geneset_desc = "")
 \item{geneset_desc}{Description meta information for gene set. Either length one or a named vector of same length as glist.}
 }
 \value{
-Gene set dataframe of 2 column or list
+Gene set dataframe of 2 column or a list of gene sets.
 }
 \description{
-GMT file reader. A GMT file format is a tab delimited text file containing gene sets.
-Each line in the GMT file should contain one geneset or pathway, delimited by tab. Genes should start from the 3rd field.
+Read/write GMT file. A GMT file format is a tab delimited text file containing gene sets.
+Each line in the GMT file should contain one gene set or pathway, delimited by tab. Genes should start from the 3rd field.
 }
 \section{Functions}{
 \itemize{

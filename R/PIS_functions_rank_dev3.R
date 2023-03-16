@@ -1,21 +1,21 @@
-#' Create Gene Rank 
+#' Create Gene Rank
 #'
 #' Create gene rank scores from differential analysis result data frames
 #' @param resultDF  result dataframe (DESeq2, edgeR)
 #' @param value.col  column as character to use as value in gene rank vector (eg. logFC, stat)
 #' @param names.col  column as character to use as names of gene rank vector (eg. entrez, ensembl)
 #' @return vector of gene rank
-#' @export
 #' @examples
 #' \dontrun{
-#' createGeneRank(resultDF, 'stat', 'entGene')
+#' createGeneRank(resultDF, "stat", "entGene")
 #' }
+#' @export
 
 createGeneRank <- function(resultDF, value.col, names.col) {
-	resultDF <- resultDF[which(!is.na(resultDF[,value.col])),]
-	genesrank <- with(resultDF, structure(get(value.col), names=as.character(get(names.col))))
-	genesrank <- sort(genesrank, decreasing=TRUE)
-	return(genesrank)
+    resultDF <- resultDF[which(!is.na(resultDF[, value.col])), ]
+    genesrank <- with(resultDF, structure(get(value.col), names = as.character(get(names.col))))
+    genesrank <- sort(genesrank, decreasing = TRUE)
+    return(genesrank)
 }
 
 
@@ -29,20 +29,19 @@ createGeneRank <- function(resultDF, value.col, names.col) {
 #' @return list of genes by rank cut-off
 #' @export
 
-binGenesByCntCutoff <- function(genesrank, max_deg_count=2000, bin_size=10, reverse=FALSE) {
+binGenesByCntCutoff <- function(genesrank, max_deg_count = 2000, bin_size = 10, reverse = FALSE) {
+    if (reverse) genesrank <- rev(genesrank)
 
-	if(reverse) genesrank <- rev(genesrank)
+    # bin sequence index
+    seqidx <- c(seq(1, max_deg_count, bin_size), max_deg_count + 1)
+    if (is.null(max_deg_count)) seqidx <- c(seq(1, length(genesrank), bin_size), length(genesrank) + 1)
 
-	# bin sequence index
-	seqidx <- c(seq(1, max_deg_count, bin_size), max_deg_count+1)
-	if(is.null(max_deg_count)) seqidx <- c(seq(1,length(genesrank),bin_size), length(genesrank)+1)
-
-	# list of genes for each count
-	geneCntList <- lapply(1:(length(seqidx)-1), function(ix) {
-		gset = names(genesrank[1:(seqidx[(ix+1)]-1)])
-		})
-	names(geneCntList) <- paste0('cut_',1:(length(seqidx)-1))
-	return(geneCntList)
+    # list of genes for each count
+    geneCntList <- lapply(1:(length(seqidx) - 1), function(ix) {
+        gset <- names(genesrank[1:(seqidx[(ix + 1)] - 1)])
+    })
+    names(geneCntList) <- paste0("cut_", 1:(length(seqidx) - 1))
+    return(geneCntList)
 }
 
 
@@ -55,26 +54,27 @@ binGenesByCntCutoff <- function(genesrank, max_deg_count=2000, bin_size=10, reve
 #' @export
 
 scoreSmooth <- function(peakObj, loess.span = 0.1) {
-	bin_scores <- peakObj$bin_scores
+    bin_scores <- peakObj$bin_scores
 
-	lw_colname <- paste0('loess_sp.',loess.span)
-	fit <- loess(bin_scores ~ genecnt, data=bin_scores, span=loess.span)
-	# bin_scores$loess.pred <- fit$fitted
-	bin_scores[,lw_colname] <- fit$fitted
-	# # library(mgcv)
-	# # model <- gam(PIS ~ s(genecnt_cut, bs='cs'), data = plotdf, sp=0.1)
-	# # plotdf$predict <- predict(model)
+    lw_colname <- paste0("loess_sp.", loess.span)
+    fit <- loess(bin_scores ~ genecnt, data = bin_scores, span = loess.span)
+    # bin_scores$loess.pred <- fit$fitted
+    bin_scores[, lw_colname] <- fit$fitted
+    # # library(mgcv)
+    # # model <- gam(PIS ~ s(genecnt_cut, bs='cs'), data = plotdf, sp=0.1)
+    # # plotdf$predict <- predict(model)
 
-	# predict peak
-	yy <- predict(fit, min(bin_scores$genecnt):max(bin_scores$genecnt))
+    # predict peak
+    yy <- predict(fit, min(bin_scores$genecnt):max(bin_scores$genecnt))
 
-	if(!'smoothed_peak' %in% names(peakObj)) peakObj$smoothed_peak <- list()
-	peakObj$smoothed_peak[[lw_colname]] <- data.frame(
-		peak_score = max(yy), peak_point = which.max(yy) + min(bin_scores$genecnt))
+    if (!"smoothed_peak" %in% names(peakObj)) peakObj$smoothed_peak <- list()
+    peakObj$smoothed_peak[[lw_colname]] <- data.frame(
+        peak_score = max(yy), peak_point = which.max(yy) + min(bin_scores$genecnt)
+    )
 
-	peakObj$bin_scores <- bin_scores
+    peakObj$bin_scores <- bin_scores
 
-	return(peakObj)
+    return(peakObj)
 }
 
 
@@ -91,31 +91,31 @@ scoreSmooth <- function(peakObj, loess.span = 0.1) {
 #' @param ncore number of cores
 #' @return peak result object with smoothed scores attribute
 
-peakSignifByRandPerm <- function(peakObj, gspace, ref_geneset, ef_cut=2, min.overlap=5, iter=1e4, use.smoothed=FALSE, ncore=1) {
-	if(use.smoothed & ('smoothed_peak' %in% names(peakObj))) {
-		smidx <- names(peakObj$smoothed_peak)[1]
-		smObj <- peakObj$smoothed_peak[[smidx]]
-		cnt <- smObj$peak_point
-		score <- smObj$peak_score
-	} else {
-		if(use.smoothed) message('use.smoothed is TRUE but there is no smoothed attributes. Using raw peaks.')
-		use.smoothed <- FALSE
-		cnt <- peakObj$peak_cnt
-		score <- peakObj$peak_score
-	}
+peakSignifByRandPerm <- function(peakObj, gspace, ref_geneset, ef_cut = 2, min.overlap = 5, iter = 1e4, use.smoothed = FALSE, ncore = 1) {
+    if (use.smoothed & ("smoothed_peak" %in% names(peakObj))) {
+        smidx <- names(peakObj$smoothed_peak)[1]
+        smObj <- peakObj$smoothed_peak[[smidx]]
+        cnt <- smObj$peak_point
+        score <- smObj$peak_score
+    } else {
+        if (use.smoothed) message("use.smoothed is TRUE but there is no smoothed attributes. Using raw peaks.")
+        use.smoothed <- FALSE
+        cnt <- peakObj$peak_cnt
+        score <- peakObj$peak_score
+    }
 
-	randomls <- lapply(1:iter, function(i) sample(gspace, cnt))
-	scoresran <- calculatePathwayScores(randomls, gspace, ref_geneset, ef_cut, min.overlap, ncore=ncore) # ~ 1 min
-	ran_score_dist <- apply(scoresran, 2, sum)
-	signif <- sum(ran_score_dist > score)/length(ran_score_dist)
-	
-	if(use.smoothed) {
-		peakObj$smoothed_peak[[smidx]] <- cbind(smObj, signif = signif)
-	} else {
-		peakObj$signif <- signif
-	}
+    randomls <- lapply(1:iter, function(i) sample(gspace, cnt))
+    scoresran <- calculatePathwayScores(randomls, gspace, ref_geneset, ef_cut, min.overlap, ncore = ncore) # ~ 1 min
+    ran_score_dist <- apply(scoresran, 2, sum)
+    signif <- sum(ran_score_dist > score) / length(ran_score_dist)
 
-	return(peakObj)
+    if (use.smoothed) {
+        peakObj$smoothed_peak[[smidx]] <- cbind(smObj, signif = signif)
+    } else {
+        peakObj$signif <- signif
+    }
+
+    return(peakObj)
 }
 
 
@@ -128,27 +128,27 @@ peakSignifByRandPerm <- function(peakObj, gspace, ref_geneset, ef_cut=2, min.ove
 #' @param lw_colname loess smoothed column name. (from names(peakObj$smoothed_peak))
 #' @export
 
-drawGeneCntCutoffPeak2 <- function(peakObj, mtitle='', lw_colname=NULL) {
-	plotdf <- peakObj$bin_scores
-	peak_cnt <- peakObj$peak_cnt
+drawGeneCntCutoffPeak2 <- function(peakObj, mtitle = "", lw_colname = NULL) {
+    plotdf <- peakObj$bin_scores
+    peak_cnt <- peakObj$peak_cnt
 
-	g1 <- ggplot(plotdf, aes(x=genecnt, y=bin_scores)) + 
-	  geom_point() + 
-	  # geom_abline(xintercept=peak_cnt, col='green', lty=2)
-	  # geom_smooth(method='gam', se=FALSE)
-	  labs(x='DEG count', y='PIS', title=mtitle) +
-	  theme_bw(base_size=12)
+    g1 <- ggplot(plotdf, aes(x = genecnt, y = bin_scores)) +
+        geom_point() +
+        # geom_abline(xintercept=peak_cnt, col='green', lty=2)
+        # geom_smooth(method='gam', se=FALSE)
+        labs(x = "DEG count", y = "PIS", title = mtitle) +
+        theme_bw(base_size = 12)
 
-	if(!is.null(lw_colname)) {
-		# lw_colname <- colnames(plotdf)[grep('loess',colnames(plotdf))]
-		peak_cnt <- peakObj$smoothed_peak[[lw_colname]]$peak_point
-		g1 <- g1 + 
-		  geom_line(aes(y = get(lw_colname)), data = plotdf, size = 1.5, linetype = 2, col = "red") +
-		  geom_vline(xintercept=peak_cnt, col='blue', lty=2)
-	} else {
-		g1 <- g1 + geom_vline(xintercept=peak_cnt, col='blue', lty=2)
-	}
-	g1
+    if (!is.null(lw_colname)) {
+        # lw_colname <- colnames(plotdf)[grep('loess',colnames(plotdf))]
+        peak_cnt <- peakObj$smoothed_peak[[lw_colname]]$peak_point
+        g1 <- g1 +
+            geom_line(aes(y = get(lw_colname)), data = plotdf, size = 1.5, linetype = 2, col = "red") +
+            geom_vline(xintercept = peak_cnt, col = "blue", lty = 2)
+    } else {
+        g1 <- g1 + geom_vline(xintercept = peak_cnt, col = "blue", lty = 2)
+    }
+    g1
 }
 
 
@@ -169,4 +169,3 @@ drawGeneCntCutoffPeak2 <- function(peakObj, mtitle='', lw_colname=NULL) {
 
 
 # }
-

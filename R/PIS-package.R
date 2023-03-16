@@ -2,6 +2,7 @@
 #' @import methods
 #' @import data.table
 #' @import stats
+#' @import utils
 
 #' @keywords internal
 "_PACKAGE"

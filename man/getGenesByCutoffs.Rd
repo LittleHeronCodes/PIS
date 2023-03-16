@@ -4,17 +4,30 @@
 \alias{getGenesByCutoffs}
 \title{Get DEGs by cut-offs}
 \usage{
-getGenesByCutoffs(resultDF, fcos, qcos)
+getGenesByCutoffs(
+  resultDF,
+  fcos,
+  qcos,
+  colname.qv = "adj.P.Val",
+  colname.lfc = "logFC",
+  colname.gene = "entGene"
+)
 }
 \arguments{
 \item{resultDF}{result data frame. Column names need to include "entGene", "adj.P.Val", "logFC"}
 
-\item{fcos}{fold change}
+\item{fcos}{fold changes to}
 
 \item{qcos}{q-value}
+
+\item{colname.qv}{name for the column in resultDF containing q-values}
+
+\item{colname.lfc}{name for the column in resultDF containing log2 Fold changes}
+
+\item{colname.gene}{name for the column in resultDF containing the gene ID (eg. entrez, ensemble, symbol)}
 }
 \value{
-List of entrez IDs
+List of gene IDs selected by cutoffs
 }
 \description{
 Extract the list of DEGs by cut-offs from the differential analysis results.

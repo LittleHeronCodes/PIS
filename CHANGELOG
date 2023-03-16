@@ -1,6 +1,9 @@
 # CHANGELOG
 
 ## Update : v.0.2.0.9000
+- 2023-03-15 : Added dataset `maqc_deseq2` for example usages.
+
+## Update : v.0.2.0.9000
 - 2023-02-15 : Run `check()`.
     - Fixed potential problems in the script (eg. wrong variables...).
     - Fixed dependency problems (import).
