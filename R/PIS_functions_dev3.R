@@ -9,7 +9,7 @@
 #' @param efs vector of enrichment factors
 #' @param ef_cut minimum enrichment factor cut-offs. Default 2
 
-pathScores2 <- function(efs, ef_cut = 2) {
+pathway_scores <- function(efs, ef_cut = 2) {
     scores <- ifelse(efs >= ef_cut, log2(efs), 0)
     return(scores)
 }
@@ -18,25 +18,30 @@ pathScores2 <- function(efs, ef_cut = 2) {
 #' Hypergeometric Test for Gene set
 #'
 #' Run hypergeometric test for gene set. (used inside calculatePathwayScores)
-#' This is a simplified version of the function in the Lazy2 package.
+#' This is a simplified version of the function `hypergeoTestForGeneset2` in the Lazy2 package.
 #'
 #' @param query  gene set to query (eg. Differentially Expressed Genes)
 #' @param refGMT list of reference gene set (eg. Pathways)
 #' @param gspace background gene space. Should contain all genes in query.
-#' @param minGeneSet minimum size of gene set. This is used to filter refGMT. Default 10
+#' @param min_geneset minimum size of gene set used to filter refGMT. Default 10
 #' @param ef.psc pseudocount when calculating enrichment factor (oddsRatio). Default 1
 #' @param verbose print number of filtered entries in refGMT. Default FALSE
 #' @return dataframe of results
 #' @export
 
-hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet = 10, ef.psc = 1, verbose = FALSE) {
+hypergeo_test_geneset <- function(query, refGMT, gspace, min_geneset = 10, ef.psc = 1, verbose = FALSE) {
     # match gene space
     if (!all(query %in% gspace)) {
-        # stop(paste(length(setdiff(query, gspace)),'query items were found outside of background space. Check inputs.'))
         query <- intersect(query, gspace)
     }
+ 
     if (length(query) == 0) {
-        stop("query should be character vector of at least length 1.")
+        stop(
+            "query after filtering for gene space is length zero.
+			Make sure that genes provided in gspace and query matches in type.
+			Ideally, gspace should contain all query genes."
+        )
+        # stop("query must be a character vector of at least length 1.")
     }
 
     if (!all(unlist(refGMT) %in% gspace)) {
@@ -44,12 +49,15 @@ hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet = 10
     }
 
     # filter refGMT with less than minimum gene set
-    exc <- which(sapply(refGMT, length) < minGeneSet)
+    exc <- which(sapply(refGMT, length) < min_geneset)
     if (length(exc) != 0) {
-        refGMT <- refGMT[which(sapply(refGMT, length) >= minGeneSet)]
+        refGMT <- refGMT[which(sapply(refGMT, length) >= min_geneset)]
     }
     if (length(refGMT) == 0) {
-        stop("Length of refGMT after filtering for minGeneSet is zero. Set lower minGeneSet or check gene inputs.")
+        stop(
+			"Length of refGMT after filtering for min_geneset and gspace is zero. 
+			Set lower min_geneset or make sure genes in refGMT and gspace matches in type."
+		)
     }
 
     # hypergeometric test
@@ -78,106 +86,106 @@ hypergeoTestForGeneset.simple <- function(query, refGMT, gspace, minGeneSet = 10
 
 #' PIS calculation
 #'
-#' Calculate pathway score for gene list (uses pathScores2 function)
+#' Calculate pathway score for gene list (uses pathway_scores function)
 #' Outputs matrix of pathway scores where each row is gene set and column is bin.
-#' @param glist list of gene set (result from binGenesByCntCutoff)
-#' @param gspace background gene space. (for hypergeoTestForGeneset.simple)
+#' @param genelist list of gene set (result from binGenesByCntCutoff)
+#' @param gspace background gene space. (for hypergeo_test_geneset)
 #' @param ref_geneset list of reference gene set (eg. Pathways)
 #' @param ef_cut EF cut-off for scoring.
 #' @param ef.psc pseudocount when calculating enrichment factor (oddsRatio). Default 0
 #' @param ncore no of threads to use in mclapply. (ncore=1 uses lapply)
 #' @param verbose print run time. Default FALSE
-#' @param ... futher arguments to be passed to the internal hypergeoTestForGeneset.simple function
+#' @param ... futher arguments to be passed to hypergeo_test_geneset
 #' @return Matrix of pathway scores
 #' @importFrom parallel mclapply
 #' @export
 
-calculatePathwayScores <- function(glist, gspace, ref_geneset, ef_cut = 2, ef.psc = 1, ncore = 4, verbose = TRUE, ...) {
+calculatePathwayScores <- function(genelist, gspace, ref_geneset, ef_cut = 2, ef.psc = 1, ncore = 4, verbose = TRUE, ...) {
     # if( any(c(ef_cut, min.overlap) <= 0 ) ) stop('ef_cut and min.overlap should both be greater than 0.')
 
     # match gene space
     if (any(!unlist(ref_geneset) %in% gspace)) {
         ref_geneset <- lapply(ref_geneset, function(g) intersect(g, gspace))
     }
-    if (any(!unlist(glist) %in% gspace)) {
-        glist <- lapply(glist, function(g) intersect(g, gspace))
+    if (any(!unlist(genelist) %in% gspace)) {
+        genelist <- lapply(genelist, function(g) intersect(g, gspace))
     }
 
     # Calculate Pathway scores
     tcheck <- proc.time()
     if (ncore > 1) {
-        scoresLS <- mclapply(glist, function(gset) {
+        scoresLS <- mclapply(genelist, function(gset) {
             if (length(gset) == 0) {
                 out <- structure(rep(0, length(ref_geneset)), names = names(ref_geneset))
             } else {
-                enres <- hypergeoTestForGeneset.simple(gset, ref_geneset, gspace = gspace, ef.psc = ef.psc, ...)
-                # enres$oddsRatio[which(enres$int <= min.overlap)] <- 0
-                enres$score <- pathScores2(efs = enres$oddsRatio, ef_cut = ef_cut)
+                enres <- hypergeo_test_geneset(gset, ref_geneset, gspace = gspace, ef.psc = ef.psc, ...)
+                enres$score <- pathway_scores(efs = enres$oddsRatio, ef_cut = ef_cut)
                 out <- structure(enres$score, names = enres$ID)
                 out <- out[names(ref_geneset)]
             }
             return(out)
         }, mc.cores = ncore)
     } else {
-        scoresLS <- lapply(glist, function(gset) {
+        scoresLS <- lapply(genelist, function(gset) {
             if (length(gset) == 0) {
                 out <- structure(rep(0, length(ref_geneset)), names = names(ref_geneset))
             } else {
-                enres <- hypergeoTestForGeneset.simple(gset, ref_geneset, gspace = gspace, ef.psc = ef.psc, ...)
-                # enres$oddsRatio[which(enres$int <= min.overlap)] <- 0
-                enres$score <- pathScores2(efs = enres$oddsRatio, ef_cut = ef_cut)
+                enres <- hypergeo_test_geneset(gset, ref_geneset, gspace = gspace, ef.psc = ef.psc, ...)
+                enres$score <- pathway_scores(efs = enres$oddsRatio, ef_cut = ef_cut)
                 out <- structure(enres$score, names = enres$ID)
                 out <- out[names(ref_geneset)]
             }
             return(out)
         })
     }
-    scoresMat <- do.call(cbind, scoresLS)
-    if (verbose) print((proc.time() - tcheck) / 60) # ~1min for glist of length 1000
-    return(scoresMat)
+    scores_mat <- do.call(cbind, scoresLS)
+
+    # runtime check
+    if (verbose) print((proc.time() - tcheck) / 60)
+    return(scores_mat)
 }
 
 # calculatePS_internal <- function(gset, gspace,ref_geneset, ef.psc, ef_cut) {
 # 	if(length(gset) == 0) {
 # 		out <- structure(rep(0, length(ref_geneset)), names=names(ref_geneset))
 # 	} else {
-# 		enres <- hypergeoTestForGeneset.simple(gset, ref_geneset, gspace = gspace, ef.psc = ef.psc, ...)
-# 		enres$score <- pathScores2(efs=enres$oddsRatio, setsizes=enres$int, ef_cut=ef_cut)
-# 		# enres$score <- pathScores2(efs=enres$oddsRatio, setsizes=geneset_size[enres$ID], ef_cut=ef_cut)
+# 		enres <- hypergeo_test_geneset(gset, ref_geneset, gspace = gspace, ef.psc = ef.psc, ...)
+# 		enres$score <- pathway_scores(efs=enres$oddsRatio, setsizes=enres$int, ef_cut=ef_cut)
+# 		# enres$score <- pathway_scores(efs=enres$oddsRatio, setsizes=geneset_size[enres$ID], ef_cut=ef_cut)
 # 		out <- structure(enres$score, names=enres$ID)
 # 	}
 # 	return(out)
 # }
 
 
-#' Get Peak Result from calculatePathwayScores
+#' Get Peak Result object from calculatePathwayScores
 #'
 #' Summarize result from calculatePathwayScores and get peak cut-off.
-#' @param geneCntList list of genes binned by count (output from binGenesByCntCutoff)
-#' @param scoresMat Pathway score matrix (output from calculatePathwayScores)
+#' @param genelist list of genes binned by cut-off.
+#' @param scores_mat Pathway score matrix (output from calculatePathwayScores)
 #' @param verbose print peak scores. Default FALSE
-#' @return PIS object list
+#' @return PISobj with peak results.
 #' @export
 
-getPeakResults2 <- function(geneCntList, scoresMat, verbose = FALSE) {
+getPeakResults2 <- function(genelist, scores_mat, verbose = FALSE) {
     # PIS for each gene count cut-off
-    gcntSum <- apply(scoresMat, 2, sum)
+    gcntSum <- apply(scores_mat, 2, sum)
 
     # gene count cut off at peak
-    peak_cnt <- sapply(geneCntList, length)[which.max(abs(gcntSum))]
+    peak_cnt <- sapply(genelist, length)[which.max(abs(gcntSum))]
 
     # peak_score
     peak_score <- gcntSum[which.max(abs(gcntSum))]
 
     # gene set in peak
-    peak_gset <- geneCntList[[names(peak_cnt)]]
+    peak_gset <- genelist[[names(peak_cnt)]]
 
     # scored pathways in peak cut-off
-    vv <- sort(abs(scoresMat[, names(peak_cnt)]), decreasing = TRUE)
+    vv <- sort(abs(scores_mat[, names(peak_cnt)]), decreasing = TRUE)
     scored_pathways <- vv[which(vv != 0)]
 
     # gene count for each cut-off
-    genecnt_cut <- sapply(geneCntList, length)
+    genecnt_cut <- sapply(genelist, length)
 
     # scores by bin
     bin_scores <- data.table(bin = names(genecnt_cut), genecnt = genecnt_cut, bin_scores = gcntSum)
