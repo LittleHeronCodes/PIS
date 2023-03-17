@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## Update : v.0.2.0.9000
+## Update : v.0.2.2.9000
+- 2023-03-17 : Style fixes
+
+## Update : v.0.2.1.9000
 - 2023-03-15 : Added dataset `maqc_deseq2` for example usages.
 
 ## Update : v.0.2.0.9000
