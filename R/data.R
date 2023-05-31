@@ -1,6 +1,7 @@
 #' MAQC2 deseq2 analysis result
 #'
-#' DESeq2 analysis result of MAQC2 dataset.
+#' Human gene ID dataframe containing Entrez, HGNC ID, Gene name, Gene symbol, Ensembl ID, gene type
+#' Used for ent2sym and more gene mapper functions.
 #'
 #' @docType data
 #' @usage data(maqc_deseq2)
@@ -13,7 +14,7 @@
 #' 	 \item{ensembl}{Ensembl ID}
 #' 	 \item{gene_type}{gene type}
 #' }
-#'
+#' 
 #' @source \href{https://www.gencodegenes.org/human/}{Gencode Metadata}
 #' @examples
 #' data(maqc_deseq2)
