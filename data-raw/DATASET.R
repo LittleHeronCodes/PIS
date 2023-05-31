@@ -8,3 +8,5 @@ library(usethis)
 maqc_deseq2 <- fread("data-raw/MAQC2_DESeq2_result.tsv", quote = "")
 
 usethis::use_data(maqc_deseq2, overwrite = TRUE)
+
+# TODO: Add pathway kpath ver2
