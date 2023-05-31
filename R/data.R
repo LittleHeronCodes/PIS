@@ -1,7 +1,6 @@
 #' MAQC2 deseq2 analysis result
 #'
-#' Human gene ID dataframe containing Entrez,
-#' Used for ent2sym and more gene mapper functions.
+#' DESeq2 analysis result of MAQC2 dataset.
 #'
 #' @docType data
 #' @usage data(maqc_deseq2)

@@ -1,6 +1,6 @@
 Package: PIS
 Title: Pathway Impact Score
-Version: 0.2.2.9000
+Version: 0.3.0.9000
 Authors@R: 
     person("Yeogha", "Yoon", email = "ygyoon17@ewhain.net", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0955-4344"))
