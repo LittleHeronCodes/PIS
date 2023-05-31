@@ -7,11 +7,11 @@
 #' @return vector of gene rank
 #' @examples
 #' \dontrun{
-#' get_gene_rank(resultDF, "stat", "entGene")
+#' createGeneRank(resultDF, "stat", "entGene")
 #' }
 #' @export
 
-get_gene_rank <- function(resultDF, value.col, names.col) {
+createGeneRank <- function(resultDF, value.col, names.col) {
     resultDF <- resultDF[which(!is.na(resultDF[, value.col])), ]
     genesrank <- with(resultDF, structure(get(value.col), names = as.character(get(names.col))))
     genesrank <- sort(genesrank, decreasing = TRUE)
@@ -22,14 +22,14 @@ get_gene_rank <- function(resultDF, value.col, names.col) {
 #' Bin Genes by rank
 #'
 #' Create a list of genes for each binned count
-#' @param genesrank named vector of genes rank (output from get_gene_rank)
+#' @param genesrank named vector of genes rank (output from createGeneRank)
 #' @param max_deg_count maximum count for DEG
 #' @param bin_size gene rank bin size
 #' @param reverse reverse order (for down regulated genes)
 #' @return list of genes by rank cut-off
 #' @export
 
-getGenesByCounts <- function(genesrank, max_deg_count = 2000, bin_size = 10, reverse = FALSE) {
+binGenesByCntCutoff <- function(genesrank, max_deg_count = 2000, bin_size = 10, reverse = FALSE) {
     if (reverse) genesrank <- rev(genesrank)
 
     # bin sequence index
@@ -37,11 +37,11 @@ getGenesByCounts <- function(genesrank, max_deg_count = 2000, bin_size = 10, rev
     if (is.null(max_deg_count)) seqidx <- c(seq(1, length(genesrank), bin_size), length(genesrank) + 1)
 
     # list of genes for each count
-    genelist <- lapply(1:(length(seqidx) - 1), function(ix) {
-        names(genesrank[1:(seqidx[(ix + 1)] - 1)])
+    geneCntList <- lapply(1:(length(seqidx) - 1), function(ix) {
+        gset <- names(genesrank[1:(seqidx[(ix + 1)] - 1)])
     })
-    names(genelist) <- paste0("cut_", 1:(length(seqidx) - 1))
-    return(genelist)
+    names(geneCntList) <- paste0("cut_", 1:(length(seqidx) - 1))
+    return(geneCntList)
 }
 
 
@@ -58,7 +58,11 @@ scoreSmooth <- function(peakObj, loess.span = 0.1) {
 
     lw_colname <- paste0("loess_sp.", loess.span)
     fit <- loess(bin_scores ~ genecnt, data = bin_scores, span = loess.span)
+    # bin_scores$loess.pred <- fit$fitted
     bin_scores[, lw_colname] <- fit$fitted
+    # # library(mgcv)
+    # # model <- gam(PIS ~ s(genecnt_cut, bs='cs'), data = plotdf, sp=0.1)
+    # # plotdf$predict <- predict(model)
 
     # predict peak
     yy <- predict(fit, min(bin_scores$genecnt):max(bin_scores$genecnt))
@@ -124,7 +128,7 @@ peakSignifByRandPerm <- function(peakObj, gspace, ref_geneset, ef_cut = 2, min.o
 #' @param lw_colname loess smoothed column name. (from names(peakObj$smoothed_peak))
 #' @export
 
-draw_pathscores_plot <- function(peakObj, mtitle = "", lw_colname = NULL) {
+drawGeneCntCutoffPeak2 <- function(peakObj, mtitle = "", lw_colname = NULL) {
     plotdf <- peakObj$bin_scores
     peak_cnt <- peakObj$peak_cnt
 
