@@ -1,15 +1,18 @@
 # CHANGELOG
 
+## Update : v.0.3.1.9000
+- 2023-08-04 : Added pathway sets as data (`intg_pathways`, `intg_pathinfo`).
+
+## Update : v.0.3.0.9000
+- Bug fix : remove na from counts in getPeakResults
+
 ## Update : v.0.3.0.9000
 - 2023-08-04 : Added pathway sets as data (`intg_pathways`, `intg_pathinfo`).
 
 ## Update : v.0.3.0.9000
 - Bug fix : remove na from counts in getPeakResults
 
-## Update : v.0.2.2.9000
-- 2023-03-17 : Style fixes
-
-## Update : v.0.2.1.9000
+## Update : v.0.2.0.9000
 - 2023-03-15 : Added dataset `maqc_deseq2` for example usages.
 
 ## Update : v.0.2.0.9000

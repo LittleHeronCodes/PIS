@@ -13,10 +13,7 @@
 #' ggplot2::theme_set(theme_transparent3)
 #' @export
 
-theme_transparent3 <- function(base_size = 11,
-                               base_family = "",
-                               base_line_size = base_size / 22,
-                               base_rect_size = base_size / 22) {
+theme_transparent3 <- function(base_size = 11, base_family = "", base_line_size = base_size / 22, base_rect_size = base_size / 22) {
     .theme <- theme_grey(
         base_size = base_size, base_family = base_family,
         base_line_size = base_line_size, base_rect_size = base_rect_size
@@ -35,5 +32,4 @@ theme_transparent3 <- function(base_size = 11,
             legend.key = element_blank(),
             panel.ontop = FALSE, complete = TRUE
         )
-    .theme
 }

@@ -7,15 +7,13 @@
 #' @param fcos fold changes to
 #' @param qcos q-value
 #' @param colname.qv name for the column in resultDF containing q-values
-#' @param colname.lfc name for the column in resultDF for log2 Fold changes
+#' @param colname.lfc name for the column in resultDF containing log2 Fold changes
 #' @param colname.gene name for the column in resultDF containing the gene ID (eg. entrez, ensemble, symbol)
 #' @return List of gene IDs selected by cutoffs
 #' @export
 
-getGenesByCutoffs <- function(resultDF, fcos, qcos,
-                              colname.qv = "adj.P.Val", colname.lfc = "logFC", colname.gene = "entGene") {
-    grid_names <- expand.grid(sprintf("fc%.1f", fcos), sprintf("q%.2f", qcos))
-    cutoff_idx <- apply(grid_names, 1, function(v) paste0(v[2], "_", v[1]))
+getGenesByCutoffs <- function(resultDF, fcos, qcos, colname.qv = "adj.P.Val", colname.lfc = "logFC", colname.gene = "entGene") {
+    cutoff_idx <- apply(expand.grid(sprintf("fc%.1f", fcos), sprintf("q%.2f", qcos)), 1, function(v) paste0(v[2], "_", v[1]))
 
     ## resultDF cleanup ##
     resultDF <- dplyr::rename_at(resultDF, c(colname.qv, colname.lfc, colname.gene), ~ c("adj.P.Val", "logFC", "geneID"))
@@ -97,11 +95,8 @@ readGMT <- function(gmtfile, as.df = FALSE) {
 #' @export
 
 writeGMT <- function(gmtfile, genelist, geneset_desc = "") {
-    if (!is.list(genelist)) {
-        stop("genelist should be a one-level list of genesets.")
-    }
-    if (!all(sapply(genelist, is.character))) {
-        stop("Genes in genelist should all be character type.")
+    if (!(is.list(genelist) & all(sapply(genelist, is.character)))) {
+        stop("Check genelist format. genelist should be a one-level list of genesets.")
     }
     if (length(names(geneset_desc)) != 0) {
         geneset_desc <- geneset_desc[names(genelist)]

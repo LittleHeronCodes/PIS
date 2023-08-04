@@ -6,7 +6,7 @@ PISobj <- setClass("PISobj")
 #'
 #' Generate an empty PIS object or turn a list into PISobj
 #' @param obj input object to make into PISobj. Leaving this empty will generate an empty object.
-##' @export
+#' @export
 
 new_PISobj <- function(obj = NULL) {
     if (inherits(obj, "PISobj")) stop("Input is already a PIS object. What are you trying to accomplish here?")
