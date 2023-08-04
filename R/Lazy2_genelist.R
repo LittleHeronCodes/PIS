@@ -28,10 +28,14 @@ getGenesByCutoffs <- function(resultDF, fcos, qcos,
     # extract gene list (from Lazy2)
     geneList <- list(up = list(), dn = list(), to = list())
     for (aid in names(resultLS)) {
-        resultDF.f <- subset(resultLS[[aid]], !is.na(geneID))
+		resultDF.f <- resultLS[[aid]]
+		resultDF.f <- resultDF.f[which(!is.na(resultDF.f$geneID)),]
+		
+		up_genes <- with(resultDF.f, unique(geneID[which(adj.P.Val < qcov[aid] & logFC >=  log2(fcov[aid]))]))
+		dn_genes <- with(resultDF.f, unique(geneID[which(adj.P.Val < qcov[aid] & logFC <= -log2(fcov[aid]))]))
 
-        geneList$up[[aid]] <- with(resultDF.f, unique(geneID[which(adj.P.Val < qcov[aid] & logFC >= log2(fcov[aid]))]))
-        geneList$dn[[aid]] <- with(resultDF.f, unique(geneID[which(adj.P.Val < qcov[aid] & logFC <= -log2(fcov[aid]))]))
+        geneList$up[[aid]] <- up_genes
+        geneList$dn[[aid]] <- dn_genes
         geneList$to[[aid]] <- unique(resultDF.f$geneID)
     }
     return(geneList)
@@ -53,7 +57,7 @@ getGenesByCutoffs <- function(resultDF, fcos, qcos,
 #' geneCount(geneList)
 #' @export
 
-gene_count <- function(geneList) {
+geneCount <- function(geneList) {
     sapply(geneList, lengths)
 }
 

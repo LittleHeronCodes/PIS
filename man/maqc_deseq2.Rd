@@ -22,8 +22,7 @@ A dataframe of 16851 rows and 10 columns:
 data(maqc_deseq2)
 }
 \description{
-Human gene ID dataframe containing Entrez, HGNC ID, Gene name, Gene symbol, Ensembl ID, gene type
-Used for ent2sym and more gene mapper functions.
+DESeq2 analysis result of MAQC2 dataset.
 }
 \examples{
 data(maqc_deseq2)

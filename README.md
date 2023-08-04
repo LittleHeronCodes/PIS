@@ -6,7 +6,7 @@ Package for Pathway Impact Score
 - [ ] Style fix : Fix variable names to something more sensible
 - [ ] Functions : Data style handling : DESeq2, EdgeR, limma (array)
 - [ ] Functions : Sort getPeakResults2
-- [ ] Functions : PISresult into class???
+- [x] Functions : PISresult into class???
 
 
 ## Installation Guide
@@ -14,7 +14,7 @@ Package for Pathway Impact Score
 ```r
 .libPaths('path/to/alt/RLib')
 devtools::install_github('LittleHeronCodes/PIS')
-library(Lazy2, lib.loc = 'path/to/alt/RLib')
+library(PIS, lib.loc = 'path/to/alt/RLib')
 ```
 
 ## How to Use (coming soon)

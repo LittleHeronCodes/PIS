@@ -32,6 +32,6 @@ Each line in the GMT file should contain one gene set or pathway, delimited by t
 }}
 \examples{
 \dontrun{
-readGMT('file/path.gmt')
+readGMT("file/path.gmt")
 }
 }

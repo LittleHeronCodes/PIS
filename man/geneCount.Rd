@@ -15,9 +15,9 @@ Lazy function for gene number for geneList.
 \examples{
 set.seed(1234)
 geneList <- list(
-	up = list(A=sample(letters,10), B=sample(letters, 5), C=sample(letters, 4)),
-	dn = list(A=sample(letters, 6), B=sample(letters,15), C=sample(letters, 7)),
-	to = list(A=letters, B=letters, C=letters)
-	)
+    up = list(A = sample(letters, 10), B = sample(letters, 5), C = sample(letters, 4)),
+    dn = list(A = sample(letters, 6), B = sample(letters, 15), C = sample(letters, 7)),
+    to = list(A = letters, B = letters, C = letters)
+)
 geneCount(geneList)
 }

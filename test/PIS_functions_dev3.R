@@ -231,7 +231,7 @@ calculatePathwayScores <- function(glist, gspace, ref_geneset, ef_cut=2, ef.psc=
 getPeakResults2 <- function(geneCntList, scoresMat, verbose=FALSE) {
 
 	# PIS for each gene count cut-off
-	gcntSum <- apply(scoresMat, 2, sum)
+	gcntSum <- apply(scoresMat, 2, sum, na.rm=TRUE)
 
 	# gene count cut off at peak
 	peak_cnt <- sapply(geneCntList, length)[which.max(abs(gcntSum))]

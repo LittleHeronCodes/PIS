@@ -5,7 +5,7 @@
 \title{PIS calculation}
 \usage{
 calculatePathwayScores(
-  glist,
+  genelist,
   gspace,
   ref_geneset,
   ef_cut = 2,
@@ -16,9 +16,9 @@ calculatePathwayScores(
 )
 }
 \arguments{
-\item{glist}{list of gene set (result from binGenesByCntCutoff)}
+\item{genelist}{list of gene set (result from binGenesByCntCutoff)}
 
-\item{gspace}{background gene space. (for hypergeoTestForGeneset.simple)}
+\item{gspace}{background gene space. (for hypergeo_test_geneset)}
 
 \item{ref_geneset}{list of reference gene set (eg. Pathways)}
 
@@ -30,12 +30,12 @@ calculatePathwayScores(
 
 \item{verbose}{print run time. Default FALSE}
 
-\item{...}{futher arguments to be passed to the internal hypergeoTestForGeneset.simple function}
+\item{...}{futher arguments to be passed to hypergeo_test_geneset}
 }
 \value{
 Matrix of pathway scores
 }
 \description{
-Calculate pathway score for gene list (uses pathScores2 function)
+Calculate pathway score for gene list (uses pathway_scores function)
 Outputs matrix of pathway scores where each row is gene set and column is bin.
 }

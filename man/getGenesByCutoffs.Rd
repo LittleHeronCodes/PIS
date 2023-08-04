@@ -22,7 +22,7 @@ getGenesByCutoffs(
 
 \item{colname.qv}{name for the column in resultDF containing q-values}
 
-\item{colname.lfc}{name for the column in resultDF containing log2 Fold changes}
+\item{colname.lfc}{name for the column in resultDF for log2 Fold changes}
 
 \item{colname.gene}{name for the column in resultDF containing the gene ID (eg. entrez, ensemble, symbol)}
 }

@@ -147,7 +147,9 @@ draw_pathscores_plot <- function(peakObj, mtitle = "", lw_colname = NULL) {
     g1
 }
 
-
+# drawGeneCntCutoffPeak2<- function(peakObj, mtitle = "", lw_colname = NULL) {
+#     .Deprecated("draw_pathscores_plot")
+# }
 
 # drawPeakMean <- function(peakObj, mtitle='', ef_cut=2.0, logScaleX=FALSE) {
 

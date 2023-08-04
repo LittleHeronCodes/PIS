@@ -94,7 +94,7 @@ hypergeo_test_geneset <- function(query, refGMT, gspace, min_geneset = 10, ef.ps
     enrRes$qVal <- p.adjust(pv, method = "fdr")
     enrRes$qVal <- ifelse(enrRes$int == 0, 1, enrRes$qVal)
 
-	enrRes <- enRes[,c('ID','pVal','qVal','oddsRatio','tan','int','gsRatio','bgRatio')]
+	enrRes <- enrRes[,c('ID','pVal','qVal','oddsRatio','tan','int','gsRatio','bgRatio')]
     return(enrRes)
 }
 
@@ -202,7 +202,7 @@ calculatePathwayScores <- function(genelist, gspace, ref_geneset, ef_cut = 2, ef
 
 getPeakResults2 <- function(genelist, scores_mat, verbose = FALSE) {
     # PIS for each gene count cut-off
-    gcntSum <- apply(scores_mat, 2, sum)
+	gcntSum <- apply(scores_mat, 2, sum, na.rm = TRUE)
 
     # gene count cut off at peak
     peak_cnt <- sapply(genelist, length)[which.max(abs(gcntSum))]

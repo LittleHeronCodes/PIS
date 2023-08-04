@@ -2,19 +2,27 @@
 % Please edit documentation in R/PIS_functions_dev3.R
 \name{getPeakResults2}
 \alias{getPeakResults2}
-\title{Get Peak Result from calculatePathwayScores}
+\title{Get Peak Result object from calculatePathwayScores}
 \usage{
-getPeakResults2(geneCntList, scoresMat, verbose = FALSE)
+getPeakResults2(genelist, scores_mat, verbose = FALSE)
 }
 \arguments{
-\item{geneCntList}{list of genes binned by count (output from binGenesByCntCutoff)}
+\item{genelist}{list of genes binned by cut-off.}
 
-\item{scoresMat}{Pathway score matrix (output from calculatePathwayScores)}
+\item{scores_mat}{Pathway score matrix (output from calculatePathwayScores)}
 
 \item{verbose}{print peak scores. Default FALSE}
 }
 \value{
-PIS object list
+PISobj with peak results.
+\describe{
+\item{peak_cnt}{: No. of DEGs selected}
+\item{peak_score}{: max PIS score}
+\item{peak_pathwayCnt}{: No. of pathways selected at peak}
+\item{peak_gset}{: DEGs selected at peak}
+\item{scored_pathways}{: Pathways and scores selected by PIS}
+\item{bin_scores}{: scores by each cut-off)}
+}
 }
 \description{
 Summarize result from calculatePathwayScores and get peak cut-off.

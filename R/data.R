@@ -19,3 +19,25 @@
 #' data(maqc_deseq2)
 "maqc_deseq2"
 
+
+#' Integrated pathway set
+#'
+#' Integrated pathway set from KaiPharm. (sources from Reactome, GO)
+#'
+#' @docType data
+#' @usage data(intg_pathways)
+#' @format A list of gene sets (human entrez ID). Pathway descriptions in intg_pathinfo.
+#'
+#' @examples
+#' data(intg_pathways)
+"intg_pathways"
+
+
+#' @describeIn intg_pathways
+#' Pathway information metadata for intg_pathways
+#' @usage data(intg_pathinfo)
+#' @format A data.table describing pathways in 'intg_pathways'
+#' @examples
+#' data(intg_pathinfo)
+"intg_pathinfo"
+
