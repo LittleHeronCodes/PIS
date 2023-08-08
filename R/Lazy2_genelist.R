@@ -3,13 +3,22 @@
 #' Get DEGs by cut-offs
 #'
 #' Extract the list of DEGs by cut-offs from the differential analysis results.
-#' @param resultDF result data frame. Column names need to include "entGene", "adj.P.Val", "logFC"
-#' @param fcos fold changes to
-#' @param qcos q-value
+#' @param resultDF result data frame. Column names should include "entGene", "adj.P.Val", "logFC"
+#' @param fcos sequence of fold changes to use as cut-offs
+#' @param qcos sequence of q-values (FDR adjusted p-value) to use as cut-offs
 #' @param colname.qv name for the column in resultDF containing q-values
 #' @param colname.lfc name for the column in resultDF containing log2 Fold changes
 #' @param colname.gene name for the column in resultDF containing the gene ID (eg. entrez, ensemble, symbol)
 #' @return List of gene IDs selected by cutoffs
+#' @examples
+#' \dontrun{
+#' data(maqc_deseq2)
+#' fcos <- seq(1.5,4.0,0.1)
+#' qcos <- seq(0.01,0.2, 0.01)
+#' geneList.conv <- getGenesByCutoffs(maqc_deseq2, fcos, qcos)
+#' # head(lapply(geneList.conv$up, head))
+#' }
+#' 
 #' @export
 
 getGenesByCutoffs <- function(resultDF, fcos, qcos, colname.qv = "adj.P.Val", colname.lfc = "logFC", colname.gene = "entGene") {

@@ -2,12 +2,9 @@
 
 ## Update : v.0.3.1.9000
 - 2023-08-04 : Added pathway sets as data (`intg_pathways`, `intg_pathinfo`).
-
-## Update : v.0.3.0.9000
-- Bug fix : remove na from counts in getPeakResults
-
-## Update : v.0.3.0.9000
-- 2023-08-04 : Added pathway sets as data (`intg_pathways`, `intg_pathinfo`).
+- 2023-08-08 : `getGenesByCutoffs` will take column names for q value, logFC, and gene ID as input and rename them.
+- 2023-08-08 : `calculatePathwayScores` filters out gene set with few genes (minGeneSet) before feeding into `hypergeoTestForGeneset.simple`.
+- 2023-08-08 : Added examples.
 
 ## Update : v.0.3.0.9000
 - Bug fix : remove na from counts in getPeakResults
@@ -29,7 +26,7 @@
 
 ## Update : v.0.1.3 (updated to server at Jul 14, 2022)
 - 2022-07-13 : hypergeoTestForGeneset.simple -- match refGMT gene space match after checking
-- 2022-07-14 : calculatePathwayScores -- minGeneSet default to NULL because it doesn't do a damn thing --> remove alltogether at the last ver.
+- 2022-07-14 : calculatePathwayScores -- min.overlap default to NULL because it doesn't do anything --> remove alltogether at the last ver.
 - 2022-07-14 : getPeakResults2 -- remove indivpeak from outputs
 
 ## Update : v.0.1.2 (updated to server at Jul 8, 2022)

@@ -10,6 +10,7 @@
 #' @return ggplot theme
 #' @import ggplot2
 #' @examples
+#' # set ggplot theme for current session
 #' ggplot2::theme_set(theme_transparent3)
 #' @export
 

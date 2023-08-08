@@ -5,20 +5,21 @@
 \title{PIS calculation}
 \usage{
 calculatePathwayScores(
-  genelist,
+  glist,
   gspace,
   ref_geneset,
   ef_cut = 2,
   ef.psc = 1,
-  ncore = 4,
+  minGeneSet = 10,
+  ncore = 1,
   verbose = TRUE,
   ...
 )
 }
 \arguments{
-\item{genelist}{list of gene set (result from binGenesByCntCutoff)}
+\item{glist}{list of gene set (result from binGenesByCntCutoff)}
 
-\item{gspace}{background gene space. (for hypergeo_test_geneset)}
+\item{gspace}{background gene space. (for hypergeoTestForGeneset.simple)}
 
 \item{ref_geneset}{list of reference gene set (eg. Pathways)}
 
@@ -26,16 +27,32 @@ calculatePathwayScores(
 
 \item{ef.psc}{pseudocount when calculating enrichment factor (oddsRatio). Default 0}
 
+\item{minGeneSet}{minimum size of gene set. This is used to filter refGMT. Default 10.}
+
 \item{ncore}{no of threads to use in mclapply. (ncore=1 uses lapply)}
 
 \item{verbose}{print run time. Default FALSE}
 
-\item{...}{futher arguments to be passed to hypergeo_test_geneset}
+\item{...}{futher arguments to be passed to the internal hypergeoTestForGeneset.simple function}
 }
 \value{
 Matrix of pathway scores
 }
 \description{
-Calculate pathway score for gene list (uses pathway_scores function)
+Calculate pathway score for gene list (uses pathScores2 function)
 Outputs matrix of pathway scores where each row is gene set and column is bin.
+}
+\examples{
+\dontrun{
+data(maqc_deseq2)
+fcos <- seq(1.5,4.0,0.1)
+qcos <- seq(0.01,0.2, 0.01)
+gspace <- unique(maqc_deseq2$entGene)
+pathways <- intg_pathways[1:1000]
+geneList.conv <- getGenesByCutoffs(maqc_deseq2, fcos, qcos)
+scoresMat <- calculatePathwayScores(geneList.conv$up, gspace, pathways, 2)
+pisres.up <- getPeakResults2(geneList.conv$up, scoresMat, verbose=TRUE)
+pisres.up
+}
+
 }

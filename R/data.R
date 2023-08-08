@@ -1,21 +1,25 @@
-#' MAQC2 deseq2 analysis result
+#' MAQC2 DESeq2 analysis result
 #'
-#' Human gene ID dataframe containing Entrez, HGNC ID, Gene name, Gene symbol, Ensembl ID, gene type
-#' Used for ent2sym and more gene mapper functions.
+#' Data table of differential expression analysis results using DESeq2 for the Microarray Quality Control 2 (MAQC2) data.
+#' Dataset downloaded from NCBI Sequence Read Archive (accession: SRP001847)
 #'
 #' @docType data
 #' @usage data(maqc_deseq2)
-#' @format A dataframe of 16851 rows and 10 columns:
+#' @format A data table of 16851 rows and 10 columns:
 #' \describe{
-#'   \item{entrez}{NCBI Entrez ID, Used in ent2sym}
-#' 	 \item{hgnc_id}{HGNC ID}
-#' 	 \item{hgnc_gene}{HGNC gene name}
-#' 	 \item{hgnc_symbol}{HGNC approved gene symbol, Used in ent2sym}
-#' 	 \item{ensembl}{Ensembl ID}
-#' 	 \item{gene_type}{gene type}
+#'   \item{baseMean}{average expression of each gene across all samples}
+#' 	 \item{logFC}{log2 fold change of each gene}
+#' 	 \item{lfcSE}{standard error of logFC, calculated by DESeq2}
+#' 	 \item{stat}{Wald statistic calculated by DESeq2}
+#' 	 \item{P.Value}{raw p-value}
+#' 	 \item{adj.P.Val}{FDR adjusted p-value, or q-value}
+#' 	 \item{ensGene}{Ensembl ID}
+#' 	 \item{entGene}{NCBI Entrez ID}
+#' 	 \item{geneSym}{HGNC approved gene symbol}
+#' 	 \item{AveExpr}{average log2-expression}
 #' }
 #' 
-#' @source \href{https://www.gencodegenes.org/human/}{Gencode Metadata}
+#' @source \href{https://trace.ncbi.nlm.nih.gov/Traces/?view=study&acc=SRP001847}{SRP001847}
 #' @examples
 #' data(maqc_deseq2)
 "maqc_deseq2"

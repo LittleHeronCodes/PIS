@@ -2,7 +2,9 @@ Package: PIS
 Title: Pathway Impact Score
 Version: 0.3.1.9000
 Authors@R: 
-    person("Yeogha", "Yoon", email = "ygyoon17@ewhain.net", role = c("aut", "cre"),
+    person("Yeogha", "Yoon", 
+		   email = "ygyoon17@ewhain.net", 
+		   role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0955-4344"))
 Description: Determine DEG thresholds by calculating the pathway level effects.
 License: MIT + file LICENSE

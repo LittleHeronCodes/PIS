@@ -14,15 +14,15 @@ getGenesByCutoffs(
 )
 }
 \arguments{
-\item{resultDF}{result data frame. Column names need to include "entGene", "adj.P.Val", "logFC"}
+\item{resultDF}{result data frame. Column names should include "entGene", "adj.P.Val", "logFC"}
 
-\item{fcos}{fold changes to}
+\item{fcos}{sequence of fold changes to use as cut-offs}
 
-\item{qcos}{q-value}
+\item{qcos}{sequence of q-values (FDR adjusted p-value) to use as cut-offs}
 
 \item{colname.qv}{name for the column in resultDF containing q-values}
 
-\item{colname.lfc}{name for the column in resultDF for log2 Fold changes}
+\item{colname.lfc}{name for the column in resultDF containing log2 Fold changes}
 
 \item{colname.gene}{name for the column in resultDF containing the gene ID (eg. entrez, ensemble, symbol)}
 }
@@ -31,4 +31,14 @@ List of gene IDs selected by cutoffs
 }
 \description{
 Extract the list of DEGs by cut-offs from the differential analysis results.
+}
+\examples{
+\dontrun{
+data(maqc_deseq2)
+fcos <- seq(1.5,4.0,0.1)
+qcos <- seq(0.01,0.2, 0.01)
+geneList.conv <- getGenesByCutoffs(maqc_deseq2, fcos, qcos)
+# head(lapply(geneList.conv$up, head))
+}
+
 }

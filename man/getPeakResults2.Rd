@@ -2,28 +2,33 @@
 % Please edit documentation in R/PIS_functions_dev3.R
 \name{getPeakResults2}
 \alias{getPeakResults2}
-\title{Get Peak Result object from calculatePathwayScores}
+\title{Get Peak Result from calculatePathwayScores}
 \usage{
-getPeakResults2(genelist, scores_mat, verbose = FALSE)
+getPeakResults2(geneCntList, scoresMat, verbose = FALSE)
 }
 \arguments{
-\item{genelist}{list of genes binned by cut-off.}
+\item{geneCntList}{list of genes binned by count (output from binGenesByCntCutoff)}
 
-\item{scores_mat}{Pathway score matrix (output from calculatePathwayScores)}
+\item{scoresMat}{Pathway score matrix (output from calculatePathwayScores)}
 
 \item{verbose}{print peak scores. Default FALSE}
 }
 \value{
-PISobj with peak results.
-\describe{
-\item{peak_cnt}{: No. of DEGs selected}
-\item{peak_score}{: max PIS score}
-\item{peak_pathwayCnt}{: No. of pathways selected at peak}
-\item{peak_gset}{: DEGs selected at peak}
-\item{scored_pathways}{: Pathways and scores selected by PIS}
-\item{bin_scores}{: scores by each cut-off)}
-}
+PIS object list
 }
 \description{
 Summarize result from calculatePathwayScores and get peak cut-off.
+}
+\examples{
+\dontrun{
+data(maqc_deseq2)
+fcos <- seq(1.5,4.0,0.1)
+qcos <- seq(0.01,0.2, 0.01)
+gspace <- unique(maqc_deseq2$entGene)
+geneList.conv <- getGenesByCutoffs(maqc_deseq2, fcos, qcos)
+scoresMat <- calculatePathwayScores(geneList.conv$up, gspace, intg_pathways, 2)
+pisres.up <- getPeakResults2(geneList.conv$up, scoresMat, verbose=TRUE)
+pisres.up
+}
+
 }
