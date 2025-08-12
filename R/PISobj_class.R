@@ -9,20 +9,22 @@ PISobj <- setClass("PISobj")
 #' @export
 
 new_PISobj <- function(obj = NULL) {
-    if (inherits(obj, "PISobj")) stop("Input is already a PIS object. What are you trying to accomplish here?")
-    if (is.null(obj)) {
-        obj <- list(
-            peak_cnt = structure(integer(1), names = character(1)),
-            peak_score = structure(numeric(1), names = character(1)),
-            peak_pathwayCnt = integer(1), peak_gset = character(),
-            scored_pathways = structure(numeric(0), names = character(0)),
-            bin_scores = data.table(bin = character(0), genecnt = integer(0), bin_scores = numeric(0))
-        )
-    } else {
-        valid <- validate_PISobj(obj)
-    }
-    obj <- structure(obj, class = "PISobj")
-    return(obj)
+	if (inherits(obj, "PISobj")) {
+		stop("Input is already a PIS object. What are you trying to accomplish here?")
+	}
+	if (is.null(obj)) {
+		obj <- list(
+			peak_cnt = structure(integer(1), names = character(1)),
+			peak_score = structure(numeric(1), names = character(1)),
+			peak_pathwayCnt = integer(1), peak_gset = character(),
+			scored_pathways = structure(numeric(0), names = character(0)),
+			bin_scores = data.table(bin = character(0), genecnt = integer(0), bin_scores = numeric(0))
+		)
+	} else {
+		valid <- validate_PISobj(obj)
+	}
+	obj <- structure(obj, class = "PISobj")
+	return(obj)
 }
 
 #' Validate PIS object
@@ -32,20 +34,22 @@ new_PISobj <- function(obj = NULL) {
 #' @export
 
 validate_PISobj <- function(obj) {
-    # list type check
-    if (!is.list(obj)) {
-        stop("Input should be in list format.", call. = FALSE)
-    }
+	# list type check
+	if (!is.list(obj)) {
+		stop("Input should be in list format.", call. = FALSE)
+	}
 
-    # attribute check
-    required <- c("peak_cnt", "peak_score", "peak_pathwayCnt", "peak_gset", "scored_pathways", "bin_scores")
-    obj_names <- names(obj)
-    if (!all(required %in% obj_names)) {
-        missing <- paste(setdiff(required, obj_names), collapse = ", ")
-        stop(paste("The following attributes are missing:", missing), call. = FALSE)
-    }
+	# attribute check
+	required <- c(
+		"peak_cnt", "peak_score", "peak_pathwayCnt", "peak_gset", "scored_pathways", "bin_scores"
+	)
+	obj_names <- names(obj)
+	if (!all(required %in% obj_names)) {
+		missing <- paste(setdiff(required, obj_names), collapse = ", ")
+		stop(paste("The following attributes are missing:", missing), call. = FALSE)
+	}
 
-    obj
+	obj
 }
 
 
@@ -61,46 +65,21 @@ validate_PISobj <- function(obj) {
 #' @export
 
 print.PISobj <- function(x, ...) {
-    cat("\n")
-    cat("  PIS Score:", x$peak_score, "\n")
-    cat("  PIS threshold:", names(x$peak_cnt), "\n")
-    cat("  No. of DEGs in peak:", x$peak_cnt, "\n")
-    cat("  No. of enriched pathways in peak:", x$peak_pathwayCnt, "\n")
-    cat("\n")
+	cat("\n")
+	cat("  PIS Score:", x$peak_score, "\n")
+	cat("  PIS threshold:", names(x$peak_cnt), "\n")
+	cat("  No. of DEGs in peak:", x$peak_cnt, "\n")
+	cat("  No. of enriched pathways in peak:", x$peak_pathwayCnt, "\n")
+	cat("\n")
 }
 
 setMethod(show, "PISobj", function(object) {
-    print(object)
+	print(object)
 })
 
-
 head.PISobj <- function(x, ...) {
-    show(x)
-    out <- lapply(x[c("peak_gset", "scored_pathways", "bin_scores")], head)
-    print(out)
+	show(x)
+	out <- lapply(x[c("peak_gset", "scored_pathways", "bin_scores")], head)
+	print(out)
 }
 
-
-
-
-
-# setOldClass("PISobj")
-
-# ## Methods
-# setMethod(show, "PISobj", function(object) {
-# 	cat("\n")
-# 	cat("  PIS Score:", object$peak_score, "\n")
-# 	cat("  PIS threshold:", names(object$peak_cnt), "\n")
-# 	cat("  No. of DEGs in peak:", object$peak_cnt,"\n")
-# 	cat("  No. of enriched pathways in peak:", object$peak_pathwayCnt,"\n")
-# 	cat("\n")
-# })
-
-# show.PISobj <- function(object) {
-# 	cat("\n")
-# 	cat("  PIS Score:", object$peak_score, "\n")
-# 	cat("  PIS threshold:", names(object$peak_cnt), "\n")
-# 	cat("  No. of DEGs in peak:", object$peak_cnt,"\n")
-# 	cat("  No. of enriched pathways in peak:", object$peak_pathwayCnt,"\n")
-# 	cat("\n")
-# }

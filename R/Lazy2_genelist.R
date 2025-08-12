@@ -21,33 +21,41 @@
 #' 
 #' @export
 
-getGenesByCutoffs <- function(resultDF, fcos, qcos, colname.qv = "adj.P.Val", colname.lfc = "logFC", colname.gene = "entGene") {
-    cutoff_idx <- apply(expand.grid(sprintf("fc%.1f", fcos), sprintf("q%.2f", qcos)), 1, function(v) paste0(v[2], "_", v[1]))
+getGenesByCutoffs <- function(
+	resultDF, fcos, qcos, 
+	colname.qv = "adj.P.Val", 
+	colname.lfc = "logFC", 
+	colname.gene = "entGene"
+) {
+	cutoff_grid <- expand.grid(fc = fcos, qv = qcos)
+	cutoff_idx <- apply(cutoff_grid, 1, function(v) {
+			paste0("q", sprintf("%.2f", v[2]), "_fc", sprintf("%.1f", v[1]))
+		})
 
-    ## resultDF cleanup ##
-    resultDF <- dplyr::rename_at(resultDF, c(colname.qv, colname.lfc, colname.gene), ~ c("adj.P.Val", "logFC", "geneID"))
+	## resultDF cleanup ##
+	resultDF <- resultDF |> 
+		dplyr::rename_at(c(colname.qv, colname.lfc, colname.gene), ~ c("adj.P.Val", "logFC", "geneID"))
 
-    resultLS <- rep(list(resultDF), length(cutoff_idx))
-    names(resultLS) <- cutoff_idx
-    fcov <- structure(rep(fcos, length(qcos)), names = cutoff_idx)
-    qcov <- structure(rep(qcos, each = length(fcos)), names = cutoff_idx)
+	resultLS <- rep(list(resultDF), length(cutoff_idx))
+	names(resultLS) <- cutoff_idx
+	fcov <- structure(rep(fcos, length(qcos)), names = cutoff_idx)
+	qcov <- structure(rep(qcos, each = length(fcos)), names = cutoff_idx)
 
-    # extract gene list (from Lazy2)
-    geneList <- list(up = list(), dn = list(), to = list())
-    for (aid in names(resultLS)) {
+	# extract gene list
+	geneList <- list(up = list(), dn = list(), to = list())
+	for (aid in names(resultLS)) {
 		resultDF.f <- resultLS[[aid]]
 		resultDF.f <- resultDF.f[which(!is.na(resultDF.f$geneID)),]
 		
 		up_genes <- with(resultDF.f, unique(geneID[which(adj.P.Val < qcov[aid] & logFC >=  log2(fcov[aid]))]))
 		dn_genes <- with(resultDF.f, unique(geneID[which(adj.P.Val < qcov[aid] & logFC <= -log2(fcov[aid]))]))
 
-        geneList$up[[aid]] <- up_genes
-        geneList$dn[[aid]] <- dn_genes
-        geneList$to[[aid]] <- unique(resultDF.f$geneID)
-    }
-    return(geneList)
+		geneList$up[[aid]] <- up_genes
+		geneList$dn[[aid]] <- dn_genes
+		geneList$to[[aid]] <- unique(resultDF.f$geneID)
+	}
+	return(geneList)
 }
-
 
 
 #' Count number of genes in geneList
@@ -65,7 +73,7 @@ getGenesByCutoffs <- function(resultDF, fcos, qcos, colname.qv = "adj.P.Val", co
 #' @export
 
 geneCount <- function(geneList) {
-    sapply(geneList, lengths)
+	sapply(geneList, lengths)
 }
 
 
@@ -86,17 +94,17 @@ geneCount <- function(geneList) {
 #' @export
 
 readGMT <- function(gmtfile, as.df = FALSE) {
-    x <- readLines(gmtfile)
-    res <- strsplit(x, "\t")
-    names(res) <- vapply(res, function(y) y[1], character(1))
-    out <- lapply(res, "[", -c(1:2))
-    if (as.df) {
-        ont2gene <- utils::stack(out)
-        ont2gene <- ont2gene[, c("ind", "values")]
-        colnames(ont2gene) <- c("ont", "gene")
-        out <- ont2gene
-    }
-    return(out)
+	x <- readLines(gmtfile)
+	res <- strsplit(x, "\t")
+	names(res) <- vapply(res, function(y) y[1], character(1))
+	out <- lapply(res, "[", -c(1:2))
+	if (as.df) {
+		ont2gene <- utils::stack(out)
+		ont2gene <- ont2gene[, c("ind", "values")]
+		colnames(ont2gene) <- c("ont", "gene")
+		out <- ont2gene
+	}
+	return(out)
 }
 
 
@@ -104,15 +112,15 @@ readGMT <- function(gmtfile, as.df = FALSE) {
 #' @export
 
 writeGMT <- function(gmtfile, genelist, geneset_desc = "") {
-    if (!(is.list(genelist) & all(sapply(genelist, is.character)))) {
-        stop("Check genelist format. genelist should be a one-level list of genesets.")
-    }
-    if (length(names(geneset_desc)) != 0) {
-        geneset_desc <- geneset_desc[names(genelist)]
-    }
+	if (!(is.list(genelist) & all(sapply(genelist, is.character)))) {
+		stop("Check genelist format. genelist should be a one-level list of genesets.")
+	}
+	if (length(names(geneset_desc)) != 0) {
+		geneset_desc <- geneset_desc[names(genelist)]
+	}
 
-    concat <- sapply(genelist, function(v) paste(v, collapse = "\t"))
-    out <- paste0(names(concat), "\t", geneset_desc, "\t", concat)
+	concat <- sapply(genelist, function(v) paste(v, collapse = "\t"))
+	out <- paste0(names(concat), "\t", geneset_desc, "\t", concat)
 
-    writeLines(out, con = gmtfile)
+	writeLines(out, con = gmtfile)
 }

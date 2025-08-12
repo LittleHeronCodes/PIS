@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Update : v.0.4.0
+- 2025-08-12 : Clean up code and improve documentation.
+- 2025-08-12 : Readme documentation.
+
 ## Update : v.0.3.1.9000
 - 2023-08-04 : Added pathway sets as data (`intg_pathways`, `intg_pathinfo`).
 - 2023-08-08 : `getGenesByCutoffs` will take column names for q value, logFC, and gene ID as input and rename them.
