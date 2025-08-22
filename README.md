@@ -1,11 +1,10 @@
-# PIS: Pathway Impact Score
+# PIS (Pathway Impact Score)
 
 PIS is an R package for determining differential expression signals in transcriptome analysis. It identifies differentially expressed gene (DEG) which optimizes pathway-level interpretation and facilitate biological insights, suggesting an alternative approach to uniformly applying conventional significance thresholds.
 
 ## Features
 - Calculate pathway impact scores from differential expression results
-- Flexible support for DESeq2, edgeR, and other result formats
-- Binning and ranking of genes by statistical metrics
+- Binning and ranking of differentially expressed genes by statistical metrics
 
 ## Installation
 
@@ -55,11 +54,3 @@ Example datasets and pathway files are provided in the `data/` and `data-raw/` d
 
 ## License
 MIT License. See `LICENSE` file for details.
-
-## Author
-Yeogha Yoon (<ygyoon17@ewhain.net>)  
-[ORCID: 0000-0003-0955-4344](https://orcid.org/0000-0003-0955-4344)
-
-## Citation
-If you use PIS in your research, please cite the package and contact the maintainer for citation details.
-
